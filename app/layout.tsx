@@ -109,6 +109,9 @@ export default function RootLayout({
   return (
     <html lang="id" className="dark">
       <head>
+        <link rel="icon" href="/icon.png?v=3" type="image/png" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.ico?v=3" />
+        <link rel="apple-touch-icon" href="/icon.png?v=3" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
