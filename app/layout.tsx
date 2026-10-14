@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   authors: [{ name: "ReelSnap" }],
   creator: "ReelSnap",
   publisher: "ReelSnap",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
+  },
   robots: {
     index: true,
     follow: true,

@@ -163,9 +163,11 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-zinc-950/85 border-b border-zinc-800/80">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-2.5">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-ig-gradient flex items-center justify-center text-white shadow-md shadow-pink-500/20">
-              <Download className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
-            </div>
+            <img
+              src="/icon.png"
+              alt="ReelSnap Logo"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl object-cover shadow-md shadow-pink-500/20"
+            />
             <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white">
               Reel<span className="text-ig-gradient">Snap</span>
             </span>
@@ -647,9 +649,11 @@ export default function HomePage() {
       <footer className="border-t border-zinc-800 bg-zinc-950 py-8 px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-3.5">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-ig-gradient flex items-center justify-center text-white">
-              <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-            </div>
+            <img
+              src="/icon.png"
+              alt="ReelSnap Logo"
+              className="w-6 h-6 rounded-md object-cover shadow-sm"
+            />
             <span className="font-bold text-sm sm:text-base text-white">
               ReelSnap
             </span>
