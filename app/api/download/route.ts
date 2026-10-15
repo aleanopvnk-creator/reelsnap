@@ -75,6 +75,8 @@ function isAllowedMediaHost(hostname: string): boolean {
   return allowedSuffixes.some((suffix) => lower === suffix || lower.endsWith(suffix));
 }
 
+export const maxDuration = 60;
+
 export async function GET(req: NextRequest) {
   try {
     // 1. Rate Limiting for downloads (60 downloads per minute per IP)

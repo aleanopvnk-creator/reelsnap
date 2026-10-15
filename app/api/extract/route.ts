@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { extractInstagramMedia } from "@/lib/instagram";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limiter";
 
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Rate Limiting Check
