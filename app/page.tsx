@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Download,
   Clipboard,
   X,
-  Sparkles,
+  Flame,
+  BadgeCheck,
   Video,
   Copy,
   Check,
@@ -15,17 +16,18 @@ import {
   Smartphone,
   RefreshCw,
   AlertCircle,
-  Share2,
   FileText,
-  Image as ImageIcon,
   CheckCircle2,
+  Music,
 } from "lucide-react";
 import FaqAccordion from "@/components/FaqAccordion";
 import AdSlot from "@/components/AdSlot";
+import InfoModal, { ModalTab } from "@/components/InfoModal";
 
 interface ExtractionData {
   shortcode: string;
   videoUrl: string;
+  audioUrl?: string;
   thumbnailUrl: string;
   caption: string;
   author: string;
@@ -41,7 +43,66 @@ export default function HomePage() {
   const [copiedCaption, setCopiedCaption] = useState(false);
   const [isCaptionExpanded, setIsCaptionExpanded] = useState(false);
   const [downloadingVideo, setDownloadingVideo] = useState(false);
-  const [downloadingThumb, setDownloadingThumb] = useState(false);
+  const [downloadingAudio, setDownloadingAudio] = useState(false);
+  const [modalTab, setModalTab] = useState<ModalTab | null>(null);
+
+  const handleOpenModal = (tab: ModalTab) => {
+    setModalTab(tab);
+  };
+
+  const handleScrollToFaq = () => {
+    const faqElement = document.getElementById("faq");
+    if (faqElement) {
+      faqElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Helper to smoothly scroll to an element considering sticky header and mobile viewports
+  const scrollToSection = (id: string) => {
+    if (typeof window === "undefined") return;
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // Standard smooth scroll (respects scroll-margin-top)
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // Second-pass adjustment for mobile browsers after virtual keyboard dismissal
+    setTimeout(() => {
+      const updatedEl = document.getElementById(id);
+      if (updatedEl) {
+        const rect = updatedEl.getBoundingClientRect();
+        // If element is partially cut off or off-target due to keyboard layout shifts
+        if (rect.top < 50 || rect.top > 180) {
+          const headerOffset = 70;
+          const elementPosition = rect.top + window.scrollY;
+          window.scrollTo({
+            top: Math.max(0, elementPosition - headerOffset),
+            behavior: "smooth",
+          });
+        }
+      }
+    }, 260);
+  };
+
+  // Automatic smooth scroll to loading skeleton when extraction starts
+  useEffect(() => {
+    if (isLoading) {
+      const timer = setTimeout(() => {
+        scrollToSection("loading-section");
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
+  // Automatic smooth scroll down to result card as soon as data arrives
+  useEffect(() => {
+    if (data) {
+      const timer = setTimeout(() => {
+        scrollToSection("result-section");
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [data]);
 
   // Paste from clipboard handler
   const handlePaste = async () => {
@@ -66,13 +127,17 @@ export default function HomePage() {
     setError(null);
   };
 
-
   // Extraction submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) {
       setError("Silakan masukkan tautan video Instagram terlebih dahulu.");
       return;
+    }
+
+    // Dismiss virtual keyboard on mobile for maximum viewport visibility
+    if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
     }
 
     setIsLoading(true);
@@ -133,19 +198,20 @@ export default function HomePage() {
     setTimeout(() => setDownloadingVideo(false), 2000);
   };
 
-  const handleDownloadThumbnail = () => {
-    if (!data?.thumbnailUrl) return;
-    setDownloadingThumb(true);
-    const downloadUrl = `/api/download?url=${encodeURIComponent(data.thumbnailUrl)}&filename=ReelSnap-Thumb-${data.shortcode}.jpg&type=image`;
+  const handleDownloadAudio = () => {
+    const audioSource = data?.audioUrl || data?.videoUrl;
+    if (!audioSource) return;
+    setDownloadingAudio(true);
+    const downloadUrl = `/api/download?url=${encodeURIComponent(audioSource)}&filename=ReelSnap-Audio-${data.shortcode}.mp3&type=audio`;
 
     const link = document.createElement("a");
     link.href = downloadUrl;
-    link.setAttribute("download", `ReelSnap-Thumb-${data.shortcode}.jpg`);
+    link.setAttribute("download", `ReelSnap-Audio-${data.shortcode}.mp3`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    setTimeout(() => setDownloadingThumb(false), 2000);
+    setTimeout(() => setDownloadingAudio(false), 2500);
   };
 
   // Proxy URL for safe in-browser video playback without CORS errors
@@ -166,7 +232,7 @@ export default function HomePage() {
             <img
               src="/icon.png"
               alt="ReelSnap Logo"
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl object-cover shadow-md shadow-pink-500/20"
+              className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-[0_2px_10px_rgba(236,72,153,0.35)] transition-transform hover:scale-105 select-none"
             />
             <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white">
               Reel<span className="text-ig-gradient">Snap</span>
@@ -189,9 +255,11 @@ export default function HomePage() {
 
           <div className="relative max-w-3xl mx-auto text-center">
             {/* Tag Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-950/40 border border-pink-800/40 text-pink-400 text-[11px] sm:text-xs font-semibold mb-3 sm:mb-5 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Unduh Video Reels & Post Instagram Gratis</span>
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-gradient-to-r from-pink-500/15 via-purple-500/10 to-amber-500/15 border border-pink-500/30 text-pink-200 text-[10.5px] xs:text-xs sm:text-xs font-semibold mb-3.5 sm:mb-5 shadow-lg shadow-pink-500/10 backdrop-blur-md hover:border-pink-500/50 transition-all select-none max-w-full">
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-400 text-white shadow-sm shadow-pink-500/40 shrink-0">
+                <Flame className="w-3 h-3 fill-white animate-pulse" />
+              </span>
+              <span className="tracking-wide">Unduh Video Reels &amp; Post Instagram Gratis</span>
             </div>
 
             {/* Main Headline */}
@@ -201,7 +269,7 @@ export default function HomePage() {
             </h1>
 
             {/* Subtitle */}
-            <p className="mt-2.5 sm:mt-3.5 text-xs sm:text-sm md:text-base text-zinc-400 max-w-lg mx-auto leading-relaxed">
+            <p className="mt-2.5 sm:mt-3.5 text-xs sm:text-sm md:text-base text-zinc-400 max-w-lg mx-auto leading-relaxed px-2">
               Simpan video Reels dan Post Instagram favorit Anda tanpa watermark secara instan dengan <strong>ReelSnap</strong>.
               Cepat, gratis, dan langsung tersimpan di galeri ponsel atau laptop Anda.
             </p>
@@ -220,7 +288,7 @@ export default function HomePage() {
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       placeholder="Tempel tautan Instagram di sini..."
-                      className="w-full h-11 sm:h-12 pl-3.5 pr-20 sm:pr-24 text-xs sm:text-sm md:text-base bg-transparent text-white placeholder:text-zinc-500 focus:outline-none"
+                      className="w-full h-11 sm:h-12 pl-3.5 pr-20 sm:pr-24 text-base sm:text-sm bg-transparent text-white placeholder:text-zinc-500 placeholder:text-xs sm:placeholder:text-sm focus:outline-none"
                       disabled={isLoading}
                       required
                     />
@@ -294,7 +362,7 @@ export default function HomePage() {
 
         {/* Loading Skeleton */}
         {isLoading && (
-          <section className="py-6 px-4 sm:px-6 max-w-2xl mx-auto">
+          <section id="loading-section" className="py-6 px-4 sm:px-6 max-w-2xl mx-auto scroll-mt-20 sm:scroll-mt-24">
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4 sm:p-6 shadow-xl space-y-4 animate-pulse">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-zinc-800" />
@@ -315,12 +383,12 @@ export default function HomePage() {
 
         {/* Result Area (Card Hasil Unduhan - Dua Kolom di Desktop, Responsif di Mobile) */}
         {data && (
-          <section className="py-6 px-4 sm:px-6 max-w-4xl mx-auto" id="result-section">
-            <div className="rounded-2xl sm:rounded-3xl border border-zinc-800 bg-zinc-900/90 shadow-2xl p-4 sm:p-6 md:p-8 overflow-hidden">
+          <section id="result-section" className="py-6 px-3 sm:px-6 max-w-4xl mx-auto scroll-mt-20 sm:scroll-mt-24">
+            <div className="rounded-2xl sm:rounded-3xl border border-zinc-800 bg-zinc-900/95 shadow-2xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-sm">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 items-center">
                 {/* Left Column: Responsive Video Preview Container */}
-                <div className="md:col-span-5 flex justify-center">
-                  <div className="w-full max-w-[260px] sm:max-w-[280px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-2xl border border-zinc-800/80 relative">
+                <div className="md:col-span-5 flex justify-center w-full">
+                  <div className="w-full max-w-[220px] xs:max-w-[240px] sm:max-w-[260px] md:max-w-[280px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-2xl border border-zinc-800/90 relative group">
                     <video
                       src={proxiedVideoUrl}
                       poster={proxiedThumbnailUrl}
@@ -335,23 +403,23 @@ export default function HomePage() {
                 </div>
 
                 {/* Right Column: Media Details & Download Actions */}
-                <div className="md:col-span-7 flex flex-col justify-between space-y-4">
+                <div className="md:col-span-7 flex flex-col justify-between space-y-3.5 sm:space-y-4">
                   {/* Creator Info */}
-                  <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full p-0.5 bg-ig-gradient flex items-center justify-center">
+                  <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80 gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full p-0.5 bg-ig-gradient flex items-center justify-center shrink-0">
                         <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center text-pink-400 font-bold text-xs sm:text-sm uppercase">
                           {data.author.charAt(0) || "IG"}
                         </div>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <h3 className="font-bold text-white text-sm sm:text-base">
+                          <h3 className="font-bold text-white text-sm sm:text-base truncate">
                             @{data.author}
                           </h3>
                           <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                         </div>
-                        <p className="text-[11px] text-zinc-400">
+                        <p className="text-[11px] text-zinc-400 truncate">
                           Instagram Creator • #{data.shortcode}
                         </p>
                       </div>
@@ -361,25 +429,25 @@ export default function HomePage() {
                       href={`https://www.instagram.com/p/${data.shortcode}/`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-colors"
+                      className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors shrink-0"
                     >
                       <span>Buka di IG</span>
                       <ExternalLink className="w-3 h-3" />
                     </a>
                   </div>
 
-                  {/* Caption Box */}
+                  {/* Caption Box with decoded emojis and expand toggle */}
                   {data.caption && (
-                    <div className="p-3 sm:p-3.5 rounded-xl bg-zinc-800/50 border border-zinc-800 text-left">
+                    <div className="p-3 sm:p-3.5 rounded-xl bg-zinc-800/50 border border-zinc-800/90 text-left">
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1">
+                        <span className="text-[10.5px] sm:text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1">
                           <FileText className="w-3 h-3 text-pink-500" />
                           <span>Caption Post</span>
                         </span>
                         <button
                           type="button"
                           onClick={handleCopyCaption}
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-pink-400 hover:underline cursor-pointer"
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-pink-400 hover:text-pink-300 transition-colors cursor-pointer"
                         >
                           {copiedCaption ? (
                             <>
@@ -395,7 +463,7 @@ export default function HomePage() {
                         </button>
                       </div>
                       <p
-                        className={`text-xs sm:text-sm text-zinc-300 leading-relaxed whitespace-pre-line ${
+                        className={`text-xs sm:text-sm text-zinc-200 leading-relaxed whitespace-pre-line ${
                           !isCaptionExpanded ? "line-clamp-3" : ""
                         }`}
                       >
@@ -405,7 +473,7 @@ export default function HomePage() {
                         <button
                           type="button"
                           onClick={() => setIsCaptionExpanded(!isCaptionExpanded)}
-                          className="mt-1 text-[11px] font-semibold text-zinc-400 hover:text-pink-400 transition-colors cursor-pointer"
+                          className="mt-1 text-[11px] font-semibold text-pink-400/90 hover:text-pink-300 transition-colors cursor-pointer"
                         >
                           {isCaptionExpanded ? "Sembunyikan" : "Lihat Selengkapnya..."}
                         </button>
@@ -414,24 +482,26 @@ export default function HomePage() {
                   )}
 
                   {/* Feature highlights pill */}
-                  <div className="flex items-center gap-2 flex-wrap text-[11px] text-zinc-400">
-                    <span className="px-2 py-0.5 rounded-md bg-zinc-800/70 border border-zinc-700/50">Format: MP4</span>
-                    <span className="px-2 py-0.5 rounded-md bg-zinc-800/70 border border-zinc-700/50">Resolusi: HD Asli</span>
-                    <span className="px-2 py-0.5 rounded-md bg-zinc-800/70 border border-zinc-700/50">Tanpa Watermark</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap text-[10.5px] sm:text-[11px] text-zinc-400">
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-zinc-300 font-medium">Format: MP4 &amp; MP3</span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-zinc-300 font-medium">Resolusi: HD Asli</span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-purple-300 font-medium">Audio: 192 kbps</span>
+                    <span className="px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-emerald-400 font-medium">Tanpa Watermark</span>
                   </div>
 
                   {/* Action Download Buttons */}
-                  <div className="space-y-2.5 pt-1">
+                  <div className="space-y-2 sm:space-y-2.5 pt-1">
+                    {/* Primary Video Download */}
                     <button
                       type="button"
                       onClick={handleDownloadVideo}
                       disabled={downloadingVideo}
-                      className="w-full h-12 sm:h-13 rounded-xl bg-ig-gradient bg-ig-gradient-hover text-white font-bold text-sm sm:text-base shadow-lg shadow-pink-500/25 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2.5"
+                      className="w-full h-11 sm:h-12 px-4 rounded-xl bg-ig-gradient bg-ig-gradient-hover text-white font-bold text-xs sm:text-sm md:text-base shadow-lg shadow-pink-500/25 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
                     >
                       {downloadingVideo ? (
                         <>
                           <RefreshCw className="w-4 h-4 animate-spin" />
-                          <span>Memulai Unduhan...</span>
+                          <span>Menyiapkan Video HD...</span>
                         </>
                       ) : (
                         <>
@@ -441,29 +511,48 @@ export default function HomePage() {
                       )}
                     </button>
 
-                    <div className="grid grid-cols-2 gap-2.5">
-                      <button
-                        type="button"
-                        onClick={handleDownloadThumbnail}
-                        disabled={downloadingThumb}
-                        className="h-10 sm:h-11 px-3 rounded-xl border border-zinc-700 bg-zinc-800/90 text-zinc-200 font-semibold text-xs sm:text-sm hover:bg-zinc-700 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                      >
-                        <ImageIcon className="w-3.5 h-3.5 text-pink-400" />
-                        <span>Thumbnail (.JPG)</span>
-                      </button>
+                    {/* Secondary Audio MP3 Download */}
+                    <button
+                      type="button"
+                      onClick={handleDownloadAudio}
+                      disabled={downloadingAudio}
+                      className="w-full h-11 sm:h-12 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs sm:text-sm md:text-base shadow-lg shadow-purple-500/20 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      {downloadingAudio ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          <span>Mengonversi Audio MP3...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Music className="w-4 h-4 stroke-[2.5]" />
+                          <span>Download Audio (.MP3)</span>
+                          <span className="hidden xs:inline text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/20">
+                            192 kbps
+                          </span>
+                        </>
+                      )}
+                    </button>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setData(null);
-                          setUrl("");
-                        }}
-                        className="h-10 sm:h-11 px-3 rounded-xl border border-zinc-700 bg-zinc-800/90 text-zinc-200 font-semibold text-xs sm:text-sm hover:bg-zinc-700 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                      >
-                        <RefreshCw className="w-3.5 h-3.5 text-zinc-400" />
-                        <span>Unduh Lainnya</span>
-                      </button>
-                    </div>
+                    {/* Reset / Unduh Video Lain */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setData(null);
+                        setUrl("");
+                        if (typeof window !== "undefined") {
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                          setTimeout(() => {
+                            const inputEl = document.getElementById("instagram-url-input");
+                            inputEl?.focus();
+                          }, 350);
+                        }
+                      }}
+                      className="w-full h-10 sm:h-11 px-4 rounded-xl border border-zinc-700/80 bg-zinc-800/70 hover:bg-zinc-700 text-zinc-300 hover:text-white font-semibold text-xs sm:text-sm active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 pt-0.5"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5 text-zinc-400" />
+                      <span>Unduh Video Lainnya</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -475,14 +564,14 @@ export default function HomePage() {
         <section className="py-10 sm:py-14 px-4 sm:px-6 max-w-4xl mx-auto">
           <div className="text-center mb-8 sm:mb-10">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white">
-              Cara Download Video Reels dengan ReelSnap
+              Cara Download Video Reels &amp; Audio dengan ReelSnap
             </h2>
             <p className="mt-1.5 text-xs sm:text-sm text-zinc-400">
-              Hanya 3 langkah mudah untuk menyimpan video ke perangkat Anda
+              Hanya 3 langkah mudah untuk menyimpan video atau audio ke perangkat Anda
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-5">
             {/* Step 1 */}
             <div className="rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 text-center shadow-sm hover:border-zinc-700/80 transition-all">
               <div className="w-10 h-10 mx-auto rounded-xl bg-pink-950/60 text-pink-400 border border-pink-800/40 font-black text-base flex items-center justify-center mb-3">
@@ -517,10 +606,10 @@ export default function HomePage() {
                 3
               </div>
               <h3 className="font-bold text-white text-sm sm:text-base mb-1.5">
-                Simpan Video HD
+                Simpan Video HD / Audio MP3
               </h3>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                Lihat preview video yang muncul, lalu tekan <strong className="text-zinc-200">&quot;Download Video HD (.MP4)&quot;</strong> untuk menyimpan otomatis.
+                Lihat preview yang muncul, lalu tekan <strong className="text-zinc-200">&quot;Download Video HD (.MP4)&quot;</strong> atau <strong className="text-zinc-200">&quot;Download Audio (.MP3)&quot;</strong>.
               </p>
             </div>
           </div>
@@ -539,17 +628,17 @@ export default function HomePage() {
                 Keunggulan ReelSnap
               </h2>
               <p className="mt-1.5 text-xs sm:text-sm text-zinc-400">
-                Fitur lengkap berstandar production untuk kemudahan pengunduhan video Anda
+                Fitur lengkap berstandar production untuk kemudahan pengunduhan video dan audio Anda
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
               {/* Feature 1 */}
-              <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 shadow-sm">
-                <div className="w-8 h-8 rounded-lg bg-pink-950 text-pink-400 flex items-center justify-center mb-3">
-                  <Video className="w-4 h-4" />
+              <div className="group p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 hover:border-pink-500/40 shadow-sm transition-all duration-200">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-pink-500/20 via-pink-600/15 to-rose-500/20 border border-pink-500/30 text-pink-300 flex items-center justify-center mb-3.5 shadow-md shadow-pink-500/15 group-hover:scale-105 group-hover:border-pink-400/50 transition-all">
+                  <Video className="w-5 h-5 text-pink-400" />
                 </div>
-                <h3 className="font-bold text-sm sm:text-base text-white mb-1">
+                <h3 className="font-bold text-sm sm:text-base text-white mb-1 group-hover:text-pink-200 transition-colors">
                   Kualitas Asli Full HD
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
@@ -558,11 +647,11 @@ export default function HomePage() {
               </div>
 
               {/* Feature 2 */}
-              <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 shadow-sm">
-                <div className="w-8 h-8 rounded-lg bg-purple-950 text-purple-400 flex items-center justify-center mb-3">
-                  <Sparkles className="w-4 h-4" />
+              <div className="group p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 hover:border-purple-500/40 shadow-sm transition-all duration-200">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-purple-500/20 via-purple-600/15 to-indigo-500/20 border border-purple-500/30 text-purple-300 flex items-center justify-center mb-3.5 shadow-md shadow-purple-500/15 group-hover:scale-105 group-hover:border-purple-400/50 transition-all">
+                  <BadgeCheck className="w-5 h-5 text-purple-400 fill-purple-400/20" />
                 </div>
-                <h3 className="font-bold text-sm sm:text-base text-white mb-1">
+                <h3 className="font-bold text-sm sm:text-base text-white mb-1 group-hover:text-purple-200 transition-colors">
                   Tanpa Watermark
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
@@ -571,11 +660,11 @@ export default function HomePage() {
               </div>
 
               {/* Feature 3 */}
-              <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 shadow-sm">
-                <div className="w-8 h-8 rounded-lg bg-amber-950 text-amber-400 flex items-center justify-center mb-3">
-                  <Zap className="w-4 h-4" />
+              <div className="group p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 hover:border-amber-500/40 shadow-sm transition-all duration-200">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500/20 via-amber-600/15 to-yellow-500/20 border border-amber-500/30 text-amber-300 flex items-center justify-center mb-3.5 shadow-md shadow-amber-500/15 group-hover:scale-105 group-hover:border-amber-400/50 transition-all">
+                  <Zap className="w-5 h-5 text-amber-400 fill-amber-400/20" />
                 </div>
-                <h3 className="font-bold text-sm sm:text-base text-white mb-1">
+                <h3 className="font-bold text-sm sm:text-base text-white mb-1 group-hover:text-amber-200 transition-colors">
                   Kecepatan Server Kilat
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
@@ -584,11 +673,11 @@ export default function HomePage() {
               </div>
 
               {/* Feature 4 */}
-              <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 shadow-sm">
-                <div className="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 flex items-center justify-center mb-3">
-                  <Smartphone className="w-4 h-4" />
+              <div className="group p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 hover:border-emerald-500/40 shadow-sm transition-all duration-200">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 via-emerald-600/15 to-teal-500/20 border border-emerald-500/30 text-emerald-300 flex items-center justify-center mb-3.5 shadow-md shadow-emerald-500/15 group-hover:scale-105 group-hover:border-emerald-400/50 transition-all">
+                  <Smartphone className="w-5 h-5 text-emerald-400" />
                 </div>
-                <h3 className="font-bold text-sm sm:text-base text-white mb-1">
+                <h3 className="font-bold text-sm sm:text-base text-white mb-1 group-hover:text-emerald-200 transition-colors">
                   Dukungan Semua Perangkat
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
@@ -597,11 +686,11 @@ export default function HomePage() {
               </div>
 
               {/* Feature 5 */}
-              <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 shadow-sm">
-                <div className="w-8 h-8 rounded-lg bg-blue-950 text-blue-400 flex items-center justify-center mb-3">
-                  <ShieldCheck className="w-4 h-4" />
+              <div className="group p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 hover:border-blue-500/40 shadow-sm transition-all duration-200">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500/20 via-blue-600/15 to-cyan-500/20 border border-blue-500/30 text-blue-300 flex items-center justify-center mb-3.5 shadow-md shadow-blue-500/15 group-hover:scale-105 group-hover:border-blue-400/50 transition-all">
+                  <ShieldCheck className="w-5 h-5 text-blue-400 fill-blue-400/20" />
                 </div>
-                <h3 className="font-bold text-sm sm:text-base text-white mb-1">
+                <h3 className="font-bold text-sm sm:text-base text-white mb-1 group-hover:text-blue-200 transition-colors">
                   100% Aman & Anonim
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
@@ -610,15 +699,15 @@ export default function HomePage() {
               </div>
 
               {/* Feature 6 */}
-              <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 shadow-sm">
-                <div className="w-8 h-8 rounded-lg bg-rose-950 text-rose-400 flex items-center justify-center mb-3">
-                  <Share2 className="w-4 h-4" />
+              <div className="group p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-zinc-900/70 border border-zinc-800 hover:border-rose-500/40 shadow-sm transition-all duration-200">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-rose-500/20 via-rose-600/15 to-pink-500/20 border border-rose-500/30 text-rose-300 flex items-center justify-center mb-3.5 shadow-md shadow-rose-500/15 group-hover:scale-105 group-hover:border-rose-400/50 transition-all">
+                  <Music className="w-5 h-5 text-rose-400" />
                 </div>
-                <h3 className="font-bold text-sm sm:text-base text-white mb-1">
-                  Thumbnail & Teks Caption
+                <h3 className="font-bold text-sm sm:text-base text-white mb-1 group-hover:text-rose-200 transition-colors">
+                  Audio MP3 &amp; Teks Caption
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Selain video MP4, Anda juga dapat mengunduh gambar thumbnail berkualitas tinggi dan menyalin teks caption lengkap.
+                  Selain video MP4, Anda juga dapat mengunduh format audio lagu/sound MP3 berkualitas 192kbps dan menyalin teks caption lengkap.
                 </p>
               </div>
             </div>
@@ -626,7 +715,7 @@ export default function HomePage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-10 sm:py-14 px-4 sm:px-6 max-w-4xl mx-auto">
+        <section id="faq" className="py-10 sm:py-14 px-4 sm:px-6 max-w-4xl mx-auto scroll-mt-20">
           <div className="text-center mb-8 sm:mb-10">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white">
               Pertanyaan yang Sering Diajukan (FAQ)
@@ -652,7 +741,7 @@ export default function HomePage() {
             <img
               src="/icon.png"
               alt="ReelSnap Logo"
-              className="w-6 h-6 rounded-md object-cover shadow-sm"
+              className="w-6 h-6 object-contain drop-shadow-[0_1px_6px_rgba(236,72,153,0.25)] select-none"
             />
             <span className="font-bold text-sm sm:text-base text-white">
               ReelSnap
@@ -664,12 +753,27 @@ export default function HomePage() {
             didukung, atau disponsori oleh Instagram atau Meta Platforms, Inc.
           </p>
 
-          <div className="flex items-center justify-center gap-3 text-[11px] sm:text-xs font-medium text-zinc-400 pt-1">
-            <span className="hover:text-pink-400 cursor-pointer">Kebijakan Privasi</span>
-            <span>•</span>
-            <span className="hover:text-pink-400 cursor-pointer">Ketentuan Layanan</span>
-            <span>•</span>
-            <span className="hover:text-pink-400 cursor-pointer">Bantuan</span>
+          <div className="flex flex-wrap items-center justify-center gap-x-3.5 sm:gap-x-4 gap-y-1.5 text-xs font-medium text-zinc-400 pt-1">
+            <button
+              onClick={() => handleOpenModal("privacy")}
+              className="hover:text-pink-400 transition-colors cursor-pointer py-1 px-1.5"
+            >
+              Kebijakan Privasi
+            </button>
+            <span className="text-zinc-600 hidden xs:inline">•</span>
+            <button
+              onClick={() => handleOpenModal("terms")}
+              className="hover:text-pink-400 transition-colors cursor-pointer py-1 px-1.5"
+            >
+              Ketentuan Layanan
+            </button>
+            <span className="text-zinc-600 hidden xs:inline">•</span>
+            <button
+              onClick={() => handleOpenModal("help")}
+              className="hover:text-pink-400 transition-colors cursor-pointer py-1 px-1.5"
+            >
+              Bantuan
+            </button>
           </div>
 
           <div className="text-[10px] sm:text-[11px] text-zinc-600 pt-1">
@@ -677,6 +781,15 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      {/* Informational Modal for Privacy, Terms & Help */}
+      <InfoModal
+        isOpen={modalTab !== null}
+        onClose={() => setModalTab(null)}
+        activeTab={modalTab || "privacy"}
+        setActiveTab={(tab) => setModalTab(tab)}
+        onScrollToFaq={handleScrollToFaq}
+      />
     </div>
   );
 }

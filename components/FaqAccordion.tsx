@@ -35,9 +35,14 @@ const FAQ_LIST: FaqItem[] = [
       "Tidak ada watermark! Video yang Anda unduh adalah file asli langsung dari server CDN Instagram dengan kualitas resolusi tertinggi (HD / 1080p) tanpa logo atau watermark tambahan apa pun.",
   },
   {
-    question: "Di mana video tersimpan setelah selesai diunduh?",
+    question: "Apakah saya bisa mendownload audio musik (MP3) saja dari video Instagram?",
     answer:
-      "Di komputer (Windows/Mac) dan Android, video langsung masuk ke folder 'Downloads' atau 'Unduhan' peramban Anda. Di smartphone, video otomatis muncul di aplikasi Galeri atau File Manager.",
+      "Tentu saja! ReelSnap kini menyediakan fitur 'Download Audio (.MP3)' berkecepatan tinggi dengan bit rate 192 kbps. Audio sound atau musik latar dari video reels akan diekstrak langsung ke format MP3 yang kompatibel dengan semua pemutar musik di HP dan komputer Anda.",
+  },
+  {
+    question: "Di mana file video dan audio tersimpan setelah selesai diunduh?",
+    answer:
+      "Di komputer (Windows/Mac) dan Android, file langsung masuk ke folder 'Downloads' atau 'Unduhan' peramban Anda. Di smartphone, file video otomatis muncul di aplikasi Galeri atau File Manager, dan file MP3 tersimpan di folder Musik/Unduhan.",
   },
 ];
 

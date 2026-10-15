@@ -11,6 +11,7 @@ export interface InstagramMediaData {
   success: true;
   shortcode: string;
   videoUrl: string;
+  audioUrl?: string;
   thumbnailUrl: string;
   caption: string;
   author: string;
@@ -59,16 +60,56 @@ export function validateAndExtractShortcode(rawUrl: string): ExtractedShortcodeI
 }
 
 /**
- * Helper to unescape JSON and HTML encoded URLs
+ * Decodes all forms of HTML decimal, hex, and named entities into standard characters & emojis
  */
-function cleanEscapedUrl(url: string): string {
-  return url
+export function decodeHtmlEntities(str: string): string {
+  if (!str) return "";
+  return str
+    // Hex entities: &#x1f62d; -> 😭
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => {
+      try {
+        return String.fromCodePoint(parseInt(hex, 16));
+      } catch {
+        return "";
+      }
+    })
+    // Decimal entities: &#128557; -> 😭
+    .replace(/&#([0-9]+);/g, (_, dec) => {
+      try {
+        return String.fromCodePoint(parseInt(dec, 10));
+      } catch {
+        return "";
+      }
+    })
+    // Named entities
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&apos;/g, "'")
+    .replace(/&#039;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+}
+
+/**
+ * Helper to unescape JSON and HTML encoded URLs and remove trailing XML tags
+ */
+export function cleanEscapedUrl(url: string): string {
+  let cleaned = url
     .replace(/\\u0026/g, "&")
     .replace(/\\u003d/g, "=")
     .replace(/\\u002f/g, "/")
     .replace(/&amp;/g, "&")
     .replace(/\\/g, "")
     .trim();
+
+  // Strip trailing XML/HTML tags like <BaseURL> or u003c
+  const cutoff = cleaned.search(/(?:u003c|<|"|')/i);
+  if (cutoff !== -1) {
+    cleaned = cleaned.slice(0, cutoff);
+  }
+  return cleaned;
 }
 
 /**
@@ -112,40 +153,70 @@ async function extractViaCrawler(shortcode: string): Promise<InstagramMediaData 
 
         const html = await response.text();
 
-        // 1. Look for video_versions JSON array
-        let videoUrl = "";
-        const videoVersionsMatch = html.match(/"video_versions"\s*:\s*(\[[^\]]+\])/);
-        if (videoVersionsMatch && videoVersionsMatch[1]) {
-          try {
-            const versions = JSON.parse(videoVersionsMatch[1]);
-            if (Array.isArray(versions) && versions.length > 0) {
-              // First version is the highest bitrate/quality
-              videoUrl = cleanEscapedUrl(versions[0].url || versions[0].src || "");
+        // 1. Scan all escaped .mp4 URLs in the HTML to detect progressive video and audio tracks
+        const allMp4Matches = [...html.matchAll(/(https?:\\\/\\\/[^\s"'<>]+\.mp4[^\s"'<>]*)/g)];
+        let progressiveVideoUrl = "";
+        let directAudioUrl = "";
+        let bestVideoUrl = "";
+
+        for (const match of allMp4Matches) {
+          const rawCandidate = cleanEscapedUrl(match[1]);
+          const efgMatch = rawCandidate.match(/efg=([^&\\"]+)/);
+          let tag = "";
+          if (efgMatch) {
+            try {
+              const b64 = decodeURIComponent(efgMatch[1]).replace(/u00253D/g, "=").replace(/%3D/g, "=");
+              const json = JSON.parse(Buffer.from(b64, "base64").toString("utf8"));
+              tag = json?.vencode_tag || "";
+            } catch {
+              // ignore
             }
-          } catch {
-            // Fallback to regex extraction from the chunk
-            const urlInVersions = videoVersionsMatch[1].match(/"url"\s*:\s*"([^"]+)"/);
-            if (urlInVersions) {
-              videoUrl = cleanEscapedUrl(urlInVersions[1]);
-            }
+          }
+
+          if (tag.includes("audio") || tag.includes("heaac")) {
+            if (!directAudioUrl) directAudioUrl = rawCandidate;
+          } else if (tag.includes("progressive")) {
+            if (!progressiveVideoUrl) progressiveVideoUrl = rawCandidate;
+          } else if (tag.includes("dash_baseline_1") || !bestVideoUrl) {
+            if (!bestVideoUrl) bestVideoUrl = rawCandidate;
           }
         }
 
-        // 2. Fallback: Search for escaped .mp4 URLs in HTML
+        // Prefer progressive video so that video preview and download have both video and audio
+        let videoUrl = progressiveVideoUrl || "";
+
+        // 2. Check video_versions JSON array if progressive video was not found
         if (!videoUrl) {
-          const mp4Matches = [...html.matchAll(/(https?:\\\/\\\/[^"'\s<>]+\.mp4[^"'\s<>]*)/g)];
-          if (mp4Matches.length > 0) {
-            videoUrl = cleanEscapedUrl(mp4Matches[0][1]);
+          const videoVersionsMatch = html.match(/"video_versions"\s*:\s*(\[[^\]]+\])/);
+          if (videoVersionsMatch && videoVersionsMatch[1]) {
+            try {
+              const versions = JSON.parse(videoVersionsMatch[1]);
+              if (Array.isArray(versions) && versions.length > 0) {
+                videoUrl = cleanEscapedUrl(versions[0].url || versions[0].src || "");
+              }
+            } catch {
+              const urlInVersions = videoVersionsMatch[1].match(/"url"\s*:\s*"([^"]+)"/);
+              if (urlInVersions) {
+                videoUrl = cleanEscapedUrl(urlInVersions[1]);
+              }
+            }
           }
         }
 
-        // 3. Fallback: Check og:video meta tag
+        // 3. Fallback to best detected video or first mp4
+        if (!videoUrl) {
+          videoUrl = bestVideoUrl || (allMp4Matches.length > 0 ? cleanEscapedUrl(allMp4Matches[0][1]) : "");
+        }
+
+        // 4. Fallback: Check og:video meta tag
         if (!videoUrl) {
           const ogVideoMatch = html.match(/<meta property=["']og:video(?::secure_url)?["'] content=["']([^"']+)["']/i);
           if (ogVideoMatch && ogVideoMatch[1]) {
             videoUrl = cleanEscapedUrl(ogVideoMatch[1]);
           }
         }
+
+        const audioUrl = directAudioUrl || videoUrl;
 
         // Extract Thumbnail from og:image
         let thumbnailUrl = "";
@@ -160,12 +231,7 @@ async function extractViaCrawler(shortcode: string): Promise<InstagramMediaData 
 
         const ogTitleMatch = html.match(/<meta property=["']og:title["'] content=["']([^"']+)["']/i);
         if (ogTitleMatch && ogTitleMatch[1]) {
-          const rawTitle = ogTitleMatch[1]
-            .replace(/&quot;/g, '"')
-            .replace(/&#x1f44c;/g, "👌")
-            .replace(/&amp;/g, "&");
-
-          // Usually "Author (@username) on Instagram: 'Caption'" or "AUTHOR on Instagram: 'Caption'"
+          const rawTitle = decodeHtmlEntities(ogTitleMatch[1]);
           const authorParts = rawTitle.split(" on Instagram");
           if (authorParts.length > 0 && authorParts[0].trim()) {
             author = authorParts[0].trim();
@@ -179,20 +245,16 @@ async function extractViaCrawler(shortcode: string): Promise<InstagramMediaData 
 
         const ogDescMatch = html.match(/<meta property=["']og:description["'] content=["']([^"']+)["']/i);
         if (ogDescMatch && ogDescMatch[1]) {
-          const rawDesc = ogDescMatch[1]
-            .replace(/&quot;/g, '"')
-            .replace(/&amp;/g, "&");
-
-          // Pattern: "490K likes, 1,236 comments - username on August 19, 2026: 'Caption'."
+          const rawDesc = decodeHtmlEntities(ogDescMatch[1]);
           const handleMatch = rawDesc.match(/-\s*([a-zA-Z0-9_.]+)\s*on/);
           if (handleMatch && handleMatch[1]) {
             author = handleMatch[1].trim();
           }
 
           if (!caption) {
-            const descCaption = rawDesc.match(/:\s*["“]([\s\S]+?)["”]?\s*\.?$/);
-            if (descCaption && descCaption[1]) {
-              caption = descCaption[1].trim();
+            const quoteMatch = rawDesc.match(/:\s*["“]([\s\S]*?)["”]\s*\.?$/) || rawDesc.match(/["“]([\s\S]*?)["”]/);
+            if (quoteMatch && quoteMatch[1]) {
+              caption = quoteMatch[1].trim();
             } else {
               caption = rawDesc;
             }
@@ -204,9 +266,10 @@ async function extractViaCrawler(shortcode: string): Promise<InstagramMediaData 
             success: true,
             shortcode,
             videoUrl,
+            audioUrl,
             thumbnailUrl: thumbnailUrl || videoUrl,
-            caption,
-            author,
+            caption: decodeHtmlEntities(caption),
+            author: decodeHtmlEntities(author),
             source: "native-crawler",
           };
         }
@@ -301,9 +364,10 @@ async function extractViaGraphQL(shortcode: string): Promise<InstagramMediaData 
           success: true,
           shortcode,
           videoUrl,
+          audioUrl: videoUrl,
           thumbnailUrl,
-          caption,
-          author,
+          caption: decodeHtmlEntities(caption),
+          author: decodeHtmlEntities(author),
           duration,
           source: "native-graphql",
         };
@@ -377,9 +441,10 @@ async function extractViaEmbed(shortcode: string): Promise<InstagramMediaData | 
           success: true,
           shortcode,
           videoUrl,
+          audioUrl: videoUrl,
           thumbnailUrl: thumbnailUrl || videoUrl,
-          caption,
-          author,
+          caption: decodeHtmlEntities(caption),
+          author: decodeHtmlEntities(author),
           source: "native-embed",
         };
       }
@@ -454,9 +519,10 @@ async function extractViaRapidAPI(
           success: true,
           shortcode,
           videoUrl: cleanEscapedUrl(videoUrl),
+          audioUrl: cleanEscapedUrl(videoUrl),
           thumbnailUrl: cleanEscapedUrl(thumbnailUrl || videoUrl),
-          caption,
-          author,
+          caption: decodeHtmlEntities(caption),
+          author: decodeHtmlEntities(author),
           source: "rapidapi",
         };
       }

@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
         success: true,
         shortcode: media.shortcode,
         videoUrl: media.videoUrl,
+        audioUrl: media.audioUrl || media.videoUrl,
         thumbnailUrl: media.thumbnailUrl,
         caption: media.caption,
         author: media.author,

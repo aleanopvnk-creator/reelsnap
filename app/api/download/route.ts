@@ -1,5 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limiter";
+import ffmpegPath from "ffmpeg-static";
+import { spawn } from "child_process";
+import { Readable } from "stream";
+import path from "path";
+import fs from "fs";
+
+function getFfmpegPath(): string {
+  const localBinary = path.join(
+    process.cwd(),
+    "node_modules",
+    "ffmpeg-static",
+    process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg"
+  );
+  if (fs.existsSync(localBinary)) {
+    return localBinary;
+  }
+  if (
+    ffmpegPath &&
+    !ffmpegPath.includes("ROOT") &&
+    fs.existsSync(ffmpegPath)
+  ) {
+    return ffmpegPath;
+  }
+  return "ffmpeg";
+}
 
 /**
  * Validates domain to prevent Server-Side Request Forgery (SSRF)
@@ -57,7 +82,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const targetUrl = searchParams.get("url");
     const requestedFilename = searchParams.get("filename");
-    const mediaType = searchParams.get("type"); // 'video' | 'image'
+    const mediaType = searchParams.get("type"); // 'video' | 'image' | 'audio'
 
     if (!targetUrl) {
       return new Response("Parameter 'url' wajib disertakan.", { status: 400 });
@@ -81,10 +106,17 @@ export async function GET(req: NextRequest) {
       : `ReelSnap_${Date.now()}`;
 
     const isImage = mediaType === "image" || safeFilename.endsWith(".jpg") || safeFilename.endsWith(".jpeg");
+    const isAudio = mediaType === "audio" || safeFilename.endsWith(".mp3");
 
-    if (isImage && !safeFilename.endsWith(".jpg") && !safeFilename.endsWith(".jpeg")) {
-      safeFilename += ".jpg";
-    } else if (!isImage && !safeFilename.endsWith(".mp4")) {
+    if (isAudio) {
+      if (!safeFilename.endsWith(".mp3")) {
+        safeFilename += ".mp3";
+      }
+    } else if (isImage) {
+      if (!safeFilename.endsWith(".jpg") && !safeFilename.endsWith(".jpeg")) {
+        safeFilename += ".jpg";
+      }
+    } else if (!safeFilename.endsWith(".mp4")) {
       safeFilename += ".mp4";
     }
 
@@ -106,14 +138,64 @@ export async function GET(req: NextRequest) {
     }
 
     // Prepare client response headers
+    const responseHeaders = new Headers();
+    responseHeaders.set("Content-Disposition", `attachment; filename="${safeFilename}"`);
+    responseHeaders.set("Cache-Control", "public, max-age=3600");
+
+    if (isAudio) {
+      responseHeaders.set("Content-Type", "audio/mpeg");
+
+      const resolvedFfmpeg = getFfmpegPath();
+      if (!resolvedFfmpeg) {
+        return new Response("FFmpeg tidak tersedia di sistem.", { status: 500 });
+      }
+
+      // Convert stream to high-quality 192kbps MP3 audio
+      const ffmpegProc = spawn(/*turbopackIgnore: true*/ resolvedFfmpeg, [
+        "-i", "pipe:0",
+        "-vn",
+        "-acodec", "libmp3lame",
+        "-b:a", "192k",
+        "-f", "mp3",
+        "pipe:1",
+      ]);
+
+      ffmpegProc.on("error", (err) => {
+        console.error("FFmpeg process error:", err);
+      });
+
+      // Abort process if client disconnects
+      req.signal.addEventListener("abort", () => {
+        try {
+          ffmpegProc.kill("SIGKILL");
+        } catch {
+          // ignore
+        }
+      });
+
+      ffmpegProc.stdin.on("error", () => {
+        // Prevent unhandled exception if ffmpeg finishes early
+      });
+
+      // Stream upstream response into ffmpeg stdin
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Readable.fromWeb(upstreamResponse.body as any).pipe(ffmpegProc.stdin);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const webStream = Readable.toWeb(ffmpegProc.stdout as any);
+
+      return new Response(webStream as unknown as BodyInit, {
+        status: 200,
+        headers: responseHeaders,
+      });
+    }
+
+    // Video / Image Handling
     const contentType = isImage
       ? "image/jpeg"
       : upstreamResponse.headers.get("content-type") || "video/mp4";
 
-    const responseHeaders = new Headers();
     responseHeaders.set("Content-Type", contentType);
-    responseHeaders.set("Content-Disposition", `attachment; filename="${safeFilename}"`);
-    responseHeaders.set("Cache-Control", "public, max-age=3600");
 
     const upstreamContentLength = upstreamResponse.headers.get("content-length");
     if (upstreamContentLength) {
