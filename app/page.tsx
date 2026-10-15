@@ -34,6 +34,7 @@ import {
   ChevronRight,
   Info,
   Menu,
+  Sparkles,
 } from "lucide-react";
 import FaqAccordion from "@/components/FaqAccordion";
 import AdSlot from "@/components/AdSlot";
@@ -90,6 +91,7 @@ export default function HomePage() {
   const [modalTab, setModalTab] = useState<ModalTab | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<"reels" | "carousel" | "audio" | "photo">("reels");
 
   // Production Features
   const [lang, setLang] = useState<Language>("id");
@@ -101,6 +103,16 @@ export default function HomePage() {
   const [showPwaModal, setShowPwaModal] = useState(false);
 
   const t = translations[lang];
+
+  // Interactive handler for services from Hero or Footer
+  const handleSelectService = (category: "reels" | "carousel" | "audio" | "photo") => {
+    setActiveCategory(category);
+    scrollToSection("hero");
+    setTimeout(() => {
+      const inputEl = document.getElementById("instagram-url-input");
+      inputEl?.focus();
+    }, 350);
+  };
 
   // Helper to smoothly scroll to an element considering sticky header and mobile viewports
   const scrollToSection = (id: string) => {
@@ -793,8 +805,71 @@ export default function HomePage() {
               {t.hero.subtitle}
             </p>
 
+            {/* 4 Interactive Category Selector Tabs */}
+            <div className="mt-5 sm:mt-6 max-w-2xl mx-auto flex items-center justify-center flex-wrap gap-1.5 sm:gap-2 px-1">
+              <button
+                type="button"
+                onClick={() => handleSelectService("reels")}
+                className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  activeCategory === "reels"
+                    ? "bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white shadow-md shadow-pink-500/25 scale-[1.02]"
+                    : theme === "light"
+                    ? "bg-white border border-slate-300 text-slate-700 hover:bg-slate-100"
+                    : "bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800"
+                }`}
+              >
+                <Video className="w-3.5 h-3.5" />
+                <span>{t.categories.reels}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectService("carousel")}
+                className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  activeCategory === "carousel"
+                    ? "bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white shadow-md shadow-pink-500/25 scale-[1.02]"
+                    : theme === "light"
+                    ? "bg-white border border-slate-300 text-slate-700 hover:bg-slate-100"
+                    : "bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800"
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>{t.categories.carousel}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectService("audio")}
+                className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  activeCategory === "audio"
+                    ? "bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white shadow-md shadow-pink-500/25 scale-[1.02]"
+                    : theme === "light"
+                    ? "bg-white border border-slate-300 text-slate-700 hover:bg-slate-100"
+                    : "bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800"
+                }`}
+              >
+                <Music className="w-3.5 h-3.5" />
+                <span>{t.categories.audio}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectService("photo")}
+                className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  activeCategory === "photo"
+                    ? "bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white shadow-md shadow-pink-500/25 scale-[1.02]"
+                    : theme === "light"
+                    ? "bg-white border border-slate-300 text-slate-700 hover:bg-slate-100"
+                    : "bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800"
+                }`}
+              >
+                <ImageIcon className="w-3.5 h-3.5" />
+                <span>{t.categories.photo}</span>
+              </button>
+            </div>
+
             {/* Input Form Card */}
-            <div className="mt-6 sm:mt-8 max-w-2xl mx-auto">
+            <div className="mt-4 sm:mt-5 max-w-2xl mx-auto">
               <form
                 onSubmit={handleSubmit}
                 onDragOver={(e) => {
@@ -844,7 +919,7 @@ export default function HomePage() {
                           setTimeout(() => triggerSubmit(pasted), 60);
                         }
                       }}
-                      placeholder={t.hero.placeholder}
+                      placeholder={t.categories?.placeholders?.[activeCategory] || t.hero.placeholder}
                       className={`w-full h-11 sm:h-12 pl-3.5 pr-22 sm:pr-24 text-base sm:text-sm bg-transparent font-bold focus:outline-none ${
                         theme === "light"
                           ? "text-slate-950 placeholder:text-slate-500 placeholder:font-semibold"
@@ -1636,115 +1711,145 @@ export default function HomePage() {
           <FaqAccordion lang={lang} />
         </section>
 
-        {/* About ReelSnap Section (About Card + 4 Metrics) */}
-        <section id="about" className="py-12 sm:py-16 px-4 sm:px-6 max-w-4xl mx-auto scroll-mt-20">
-          <div
-            className={`rounded-3xl border-2 p-6 sm:p-8 md:p-10 transition-all backdrop-blur-md relative overflow-hidden ${
-              theme === "light"
-                ? "bg-white border-slate-200/90 shadow-2xl shadow-slate-200/70"
-                : "bg-zinc-900/90 border-zinc-800 shadow-2xl shadow-pink-500/5"
-            }`}
-          >
-            {/* Background Accent Glow */}
-            <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-pink-500/10 via-purple-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-amber-500/10 via-rose-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+        {/* About ReelSnap Section (Split Bento Grid Layout) */}
+        <section id="about" className="py-12 sm:py-16 px-4 sm:px-6 max-w-6xl mx-auto scroll-mt-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
+            {/* Left Column: Narrative Card (55% / 7 cols) */}
+            <div
+              className={`lg:col-span-7 flex flex-col justify-between rounded-3xl border-2 p-6 sm:p-8 md:p-10 backdrop-blur-md relative overflow-hidden transition-all ${
+                theme === "light"
+                  ? "bg-white border-slate-200/90 shadow-xl shadow-slate-200/70"
+                  : "bg-zinc-900/90 border-zinc-800 shadow-xl shadow-pink-500/5"
+              }`}
+            >
+              {/* Instagram Subtle Aura Background */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-pink-500/15 via-rose-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-amber-500/15 via-purple-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative z-10">
-              {/* Badge & Title */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-pink-500/15 border border-pink-500/30 text-pink-700 dark:text-pink-300 mb-3.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-pink-500" />
-                <span>{t.about.badge}</span>
+              <div className="relative z-10">
+                {/* Instagram Gradient Badge */}
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-gradient-to-r from-pink-500/15 via-rose-500/15 to-amber-500/15 border border-pink-500/30 text-pink-700 dark:text-pink-300 mb-4 shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-pink-500 animate-pulse" />
+                  <span>{t.about.badge}</span>
+                </div>
+
+                {/* Narrative Title */}
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-950 dark:text-white tracking-tight mb-4 leading-snug">
+                  {t.about.title}
+                </h2>
+
+                {/* 2 Comprehensive Paragraphs */}
+                <div className="space-y-3.5 text-xs sm:text-sm font-semibold text-slate-700 dark:text-zinc-300 leading-relaxed text-justify sm:text-left">
+                  <p>{t.about.p1}</p>
+                  <p>{t.about.p2}</p>
+                </div>
               </div>
 
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-950 dark:text-white tracking-tight mb-4">
-                {t.about.title}
-              </h2>
+              {/* 3 Pill Badges at bottom */}
+              <div className="relative z-10 mt-6 pt-5 sm:pt-6 border-t border-slate-200 dark:border-zinc-800/80 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-pink-500/10 text-pink-700 dark:text-pink-300 border border-pink-500/20">
+                  {t.about.pills.pill1}
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20">
+                  {t.about.pills.pill2}
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                  {t.about.pills.pill3}
+                </span>
+              </div>
+            </div>
 
-              {/* 2 Paragraphs */}
-              <div className="space-y-3.5 text-xs sm:text-sm font-semibold text-slate-700 dark:text-zinc-300 leading-relaxed text-justify sm:text-left">
-                <p>{t.about.p1}</p>
-                <p>{t.about.p2}</p>
+            {/* Right Column: 2x2 Bento Feature Cards (45% / 5 cols) */}
+            <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+              {/* Card 1: Karusel Multi-Slide */}
+              <div
+                className={`rounded-3xl border-2 p-5 sm:p-6 backdrop-blur-md relative overflow-hidden transition-all flex flex-col justify-between hover:scale-[1.01] ${
+                  theme === "light"
+                    ? "bg-white border-slate-200 shadow-md hover:shadow-lg"
+                    : "bg-zinc-900/90 border-zinc-800 shadow-md hover:border-pink-500/30"
+                }`}
+              >
+                <div>
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-pink-500/25 mb-3.5">
+                    <Layers className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-950 dark:text-white mb-1.5 leading-snug">
+                    {t.about.bento.card1Title}
+                  </h3>
+                </div>
+                <p className="text-xs font-semibold text-slate-600 dark:text-zinc-400 leading-relaxed mt-2">
+                  {t.about.bento.card1Desc}
+                </p>
               </div>
 
-              {/* Thin Horizontal Divider */}
-              <div className="my-6 sm:my-8 border-t border-slate-200 dark:border-zinc-800/80" />
-
-              {/* 4 Metrics Columns */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 text-center">
-                {/* Metric 1 */}
-                <div className={`p-3 sm:p-4 rounded-2xl border transition-all ${
+              {/* Card 2: Kualitas Asli 1080p */}
+              <div
+                className={`rounded-3xl border-2 p-5 sm:p-6 backdrop-blur-md relative overflow-hidden transition-all flex flex-col justify-between hover:scale-[1.01] ${
                   theme === "light"
-                    ? "bg-slate-50/80 border-slate-200"
-                    : "bg-zinc-950/60 border-zinc-800/80"
-                }`}>
-                  <div className="text-xl sm:text-2xl md:text-3xl font-black text-ig-gradient mb-0.5 sm:mb-1">
-                    {t.about.metric1Value}
+                    ? "bg-white border-slate-200 shadow-md hover:shadow-lg"
+                    : "bg-zinc-900/90 border-zinc-800 shadow-md hover:border-purple-500/30"
+                }`}
+              >
+                <div>
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-600 to-rose-500 flex items-center justify-center text-white shadow-md shadow-purple-500/25 mb-3.5">
+                    <Sparkles className="w-5 h-5" />
                   </div>
-                  <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
-                    {t.about.metric1Label}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-zinc-400 mt-0.5 leading-snug">
-                    {t.about.metric1Desc}
-                  </div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-950 dark:text-white mb-1.5 leading-snug">
+                    {t.about.bento.card2Title}
+                  </h3>
                 </div>
+                <p className="text-xs font-semibold text-slate-600 dark:text-zinc-400 leading-relaxed mt-2">
+                  {t.about.bento.card2Desc}
+                </p>
+              </div>
 
-                {/* Metric 2 */}
-                <div className={`p-3 sm:p-4 rounded-2xl border transition-all ${
+              {/* Card 3: Konverter Audio MP3 */}
+              <div
+                className={`rounded-3xl border-2 p-5 sm:p-6 backdrop-blur-md relative overflow-hidden transition-all flex flex-col justify-between hover:scale-[1.01] ${
                   theme === "light"
-                    ? "bg-slate-50/80 border-slate-200"
-                    : "bg-zinc-950/60 border-zinc-800/80"
-                }`}>
-                  <div className="text-xl sm:text-2xl md:text-3xl font-black text-ig-gradient mb-0.5 sm:mb-1">
-                    {t.about.metric2Value}
+                    ? "bg-white border-slate-200 shadow-md hover:shadow-lg"
+                    : "bg-zinc-900/90 border-zinc-800 shadow-md hover:border-amber-500/30"
+                }`}
+              >
+                <div>
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-pink-500 flex items-center justify-center text-white shadow-md shadow-amber-500/25 mb-3.5">
+                    <Music className="w-5 h-5" />
                   </div>
-                  <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
-                    {t.about.metric2Label}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-zinc-400 mt-0.5 leading-snug">
-                    {t.about.metric2Desc}
-                  </div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-950 dark:text-white mb-1.5 leading-snug">
+                    {t.about.bento.card3Title}
+                  </h3>
                 </div>
+                <p className="text-xs font-semibold text-slate-600 dark:text-zinc-400 leading-relaxed mt-2">
+                  {t.about.bento.card3Desc}
+                </p>
+              </div>
 
-                {/* Metric 3 */}
-                <div className={`p-3 sm:p-4 rounded-2xl border transition-all ${
+              {/* Card 4: Privasi Tanpa Jejak */}
+              <div
+                className={`rounded-3xl border-2 p-5 sm:p-6 backdrop-blur-md relative overflow-hidden transition-all flex flex-col justify-between hover:scale-[1.01] ${
                   theme === "light"
-                    ? "bg-slate-50/80 border-slate-200"
-                    : "bg-zinc-950/60 border-zinc-800/80"
-                }`}>
-                  <div className="text-xl sm:text-2xl md:text-3xl font-black text-ig-gradient mb-0.5 sm:mb-1">
-                    {t.about.metric3Value}
+                    ? "bg-white border-slate-200 shadow-md hover:shadow-lg"
+                    : "bg-zinc-900/90 border-zinc-800 shadow-md hover:border-emerald-500/30"
+                }`}
+              >
+                <div>
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/25 mb-3.5">
+                    <ShieldCheck className="w-5 h-5" />
                   </div>
-                  <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
-                    {t.about.metric3Label}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-zinc-400 mt-0.5 leading-snug">
-                    {t.about.metric3Desc}
-                  </div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-950 dark:text-white mb-1.5 leading-snug">
+                    {t.about.bento.card4Title}
+                  </h3>
                 </div>
-
-                {/* Metric 4 */}
-                <div className={`p-3 sm:p-4 rounded-2xl border transition-all ${
-                  theme === "light"
-                    ? "bg-slate-50/80 border-slate-200"
-                    : "bg-zinc-950/60 border-zinc-800/80"
-                }`}>
-                  <div className="text-xl sm:text-2xl md:text-3xl font-black text-ig-gradient mb-0.5 sm:mb-1">
-                    {t.about.metric4Value}
-                  </div>
-                  <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
-                    {t.about.metric4Label}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-zinc-400 mt-0.5 leading-snug">
-                    {t.about.metric4Desc}
-                  </div>
-                </div>
+                <p className="text-xs font-semibold text-slate-600 dark:text-zinc-400 leading-relaxed mt-2">
+                  {t.about.bento.card4Desc}
+                </p>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Footer Area (Professional 4-Column Layout) */}
+      {/* Footer Area (Unique ReelSnap 4-Column Layout) */}
       <footer
         className={`border-t transition-colors ${
           theme === "light"
@@ -1754,8 +1859,8 @@ export default function HomePage() {
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           {/* 4 Column Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 sm:pb-12 border-b border-slate-300/80 dark:border-zinc-800/80">
-            {/* Column 1: Brand & Social Pills (span 4) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 pb-10 sm:pb-12 border-b border-slate-300/80 dark:border-zinc-800/80">
+            {/* Column 1: Brand & Status Jaringan (span 4) */}
             <div className="lg:col-span-4 space-y-4">
               <div className="flex items-center gap-2.5">
                 <img
@@ -1771,57 +1876,71 @@ export default function HomePage() {
                 {t.footer.tagline}
               </p>
 
-              <div className="pt-2">
-                <p className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-2.5">
-                  {t.footer.followLabel}
-                </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  {/* Instagram Pill */}
-                  <a
-                    href="https://instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-pink-500/15 hover:bg-pink-500/25 border border-pink-500/30 text-pink-700 dark:text-pink-300 transition-all hover:scale-105"
-                  >
-                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                    </svg>
-                    <span>Instagram</span>
-                  </a>
-
-                  {/* TikTok Pill */}
-                  <a
-                    href="https://tiktok.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-200/80 dark:bg-zinc-800 hover:bg-slate-300 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 transition-all hover:scale-105 border border-slate-300 dark:border-zinc-700"
-                  >
-                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.97v7.68c0 2.11-.64 4.24-1.92 5.91-1.66 2.17-4.32 3.44-7.05 3.36-2.58-.08-5.02-1.32-6.57-3.37-1.76-2.31-2.23-5.46-1.26-8.23.97-2.77 3.35-4.84 6.26-5.41.66-.13 1.33-.18 2-.17v4.06c-.44-.03-.89-.01-1.33.07-1.38.25-2.55 1.19-3.08 2.49-.53 1.3-.32 2.82.56 3.93.88 1.11 2.31 1.74 3.73 1.62 1.42-.12 2.68-.96 3.25-2.26.24-.55.36-1.15.36-1.76V.02z"/>
-                    </svg>
-                    <span>TikTok</span>
-                  </a>
-
-                  {/* WhatsApp Pill */}
-                  <a
-                    href="https://whatsapp.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 transition-all hover:scale-105"
-                  >
-                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-                    </svg>
-                    <span>WhatsApp</span>
-                  </a>
+              {/* Status Indicator & Platform List */}
+              <div className="space-y-2 pt-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                  <span>{t.footer.statusActive}</span>
                 </div>
+                <p className="text-[11px] font-medium text-slate-500 dark:text-zinc-500 pl-1">
+                  {t.footer.platforms}
+                </p>
               </div>
             </div>
 
-            {/* Column 2: Navigasi Cepat (span 3) */}
+            {/* Column 2: Layanan Instagram - Interaktif (span 3) */}
             <div className="lg:col-span-3 space-y-3">
               <h3 className="font-black text-xs sm:text-sm text-slate-950 dark:text-white uppercase tracking-wider">
                 {t.footer.col2Title}
+              </h3>
+              <ul className="space-y-2 text-xs sm:text-sm font-semibold">
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectService("reels")}
+                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer text-left flex items-center gap-2 group"
+                  >
+                    <Video className="w-3.5 h-3.5 text-pink-500 group-hover:scale-110 transition-transform" />
+                    <span>{t.footer.serviceReels}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectService("carousel")}
+                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer text-left flex items-center gap-2 group"
+                  >
+                    <Layers className="w-3.5 h-3.5 text-purple-500 group-hover:scale-110 transition-transform" />
+                    <span>{t.footer.serviceCarousel}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectService("audio")}
+                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer text-left flex items-center gap-2 group"
+                  >
+                    <Music className="w-3.5 h-3.5 text-amber-500 group-hover:scale-110 transition-transform" />
+                    <span>{t.footer.serviceAudio}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectService("photo")}
+                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer text-left flex items-center gap-2 group"
+                  >
+                    <ImageIcon className="w-3.5 h-3.5 text-rose-500 group-hover:scale-110 transition-transform" />
+                    <span>{t.footer.servicePhoto}</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3: Panduan & Navigasi (span 2) */}
+            <div className="lg:col-span-2 space-y-3">
+              <h3 className="font-black text-xs sm:text-sm text-slate-950 dark:text-white uppercase tracking-wider">
+                {t.footer.col3Title}
               </h3>
               <ul className="space-y-1.5 text-xs sm:text-sm font-semibold">
                 <li>
@@ -1872,129 +1991,97 @@ export default function HomePage() {
               </ul>
             </div>
 
-            {/* Column 3: Keamanan & Etika (span 3) */}
+            {/* Column 4: Legalitas & Pusat Bantuan (span 3) */}
             <div className="lg:col-span-3 space-y-3">
               <h3 className="font-black text-xs sm:text-sm text-slate-950 dark:text-white uppercase tracking-wider">
-                {t.footer.col3Title}
+                {t.footer.col4Title}
               </h3>
               <ul className="space-y-1.5 text-xs sm:text-sm font-semibold">
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal("privacy")}
+                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer flex items-center gap-1.5 text-left"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-pink-500 shrink-0" />
+                    <span>{t.footer.legalPrivacy}</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal("terms")}
+                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer flex items-center gap-1.5 text-left"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                    <span>{t.footer.legalTerms}</span>
+                  </button>
+                </li>
                 <li>
                   <button
                     type="button"
                     onClick={() => handleOpenModal("dmca")}
                     className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer flex items-center gap-1.5 text-left"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>{t.footer.ethicsCopyright}</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                    <span>{t.footer.legalDmca}</span>
                   </button>
                 </li>
                 <li>
                   <button
                     type="button"
-                    onClick={() => handleOpenModal("terms")}
+                    onClick={() => handleOpenModal("help")}
                     className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer flex items-center gap-1.5 text-left"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>{t.footer.ethicsPublicOnly}</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenModal("privacy")}
-                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer flex items-center gap-1.5 text-left"
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>{t.footer.ethicsNoStorage}</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection("about")}
-                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer flex items-center gap-1.5 text-left"
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span>{t.footer.ethicsSsrf}</span>
-                  </button>
-                </li>
-                <li className="pt-1.5 flex items-center gap-2.5 text-xs font-bold">
-                  <button
-                    type="button"
-                    onClick={() => handleOpenModal("privacy")}
-                    className="py-1 text-pink-600 dark:text-pink-400 hover:underline cursor-pointer"
-                  >
-                    {t.footer.privacy}
-                  </button>
-                  <span className="text-slate-400 dark:text-zinc-700">•</span>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenModal("terms")}
-                    className="py-1 text-pink-600 dark:text-pink-400 hover:underline cursor-pointer"
-                  >
-                    {t.footer.terms}
+                    <Info className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                    <span>{t.footer.legalHelp}</span>
                   </button>
                 </li>
               </ul>
-            </div>
 
-            {/* Column 4: Media Sosial & Kontak (span 2) */}
-            <div className="lg:col-span-2 space-y-3">
-              <h3 className="font-black text-xs sm:text-sm text-slate-950 dark:text-white uppercase tracking-wider">
-                {t.footer.col4Title}
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-semibold">
-                <li>
+              {/* Single row of clean, elegant social media icon buttons without repetitive text */}
+              <div className="pt-2">
+                <div className="flex items-center gap-2">
                   <a
                     href="https://instagram.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors flex items-center gap-2"
+                    aria-label="Instagram"
+                    title="Instagram"
+                    className="w-8 h-8 rounded-full bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/25 flex items-center justify-center text-pink-600 dark:text-pink-400 transition-all hover:scale-110"
                   >
-                    <div className="w-6 h-6 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-500 shrink-0">
-                      <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                      </svg>
-                    </div>
-                    <span>{t.footer.contactIg}</span>
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
                   </a>
-                </li>
-                <li>
+
                   <a
                     href="https://tiktok.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors flex items-center gap-2"
+                    aria-label="TikTok"
+                    title="TikTok"
+                    className="w-8 h-8 rounded-full bg-slate-200/80 dark:bg-zinc-800 hover:bg-slate-300 dark:hover:bg-zinc-700 border border-slate-300 dark:border-zinc-700 flex items-center justify-center text-slate-800 dark:text-zinc-200 transition-all hover:scale-110"
                   >
-                    <div className="w-6 h-6 rounded-lg bg-slate-200 dark:bg-zinc-800 flex items-center justify-center text-slate-800 dark:text-zinc-200 shrink-0">
-                      <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
-                        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.97v7.68c0 2.11-.64 4.24-1.92 5.91-1.66 2.17-4.32 3.44-7.05 3.36-2.58-.08-5.02-1.32-6.57-3.37-1.76-2.31-2.23-5.46-1.26-8.23.97-2.77 3.35-4.84 6.26-5.41.66-.13 1.33-.18 2-.17v4.06c-.44-.03-.89-.01-1.33.07-1.38.25-2.55 1.19-3.08 2.49-.53 1.3-.32 2.82.56 3.93.88 1.11 2.31 1.74 3.73 1.62 1.42-.12 2.68-.96 3.25-2.26.24-.55.36-1.15.36-1.76V.02z"/>
-                      </svg>
-                    </div>
-                    <span>{t.footer.contactTiktok}</span>
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.97v7.68c0 2.11-.64 4.24-1.92 5.91-1.66 2.17-4.32 3.44-7.05 3.36-2.58-.08-5.02-1.32-6.57-3.37-1.76-2.31-2.23-5.46-1.26-8.23.97-2.77 3.35-4.84 6.26-5.41.66-.13 1.33-.18 2-.17v4.06c-.44-.03-.89-.01-1.33.07-1.38.25-2.55 1.19-3.08 2.49-.53 1.3-.32 2.82.56 3.93.88 1.11 2.31 1.74 3.73 1.62 1.42-.12 2.68-.96 3.25-2.26.24-.55.36-1.15.36-1.76V.02z"/>
+                    </svg>
                   </a>
-                </li>
-                <li>
+
                   <a
                     href="https://whatsapp.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors flex items-center gap-2"
+                    aria-label="WhatsApp"
+                    title="WhatsApp"
+                    className="w-8 h-8 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 flex items-center justify-center text-emerald-600 dark:text-emerald-400 transition-all hover:scale-110"
                   >
-                    <div className="w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0">
-                      <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-                      </svg>
-                    </div>
-                    <span>{t.footer.contactWa}</span>
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                    </svg>
                   </a>
-                </li>
-                <li className="pt-1">
-                  <span className="text-[11px] font-medium text-slate-500 dark:text-zinc-500">
-                    {t.footer.contactHours}
-                  </span>
-                </li>
-              </ul>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -2008,9 +2095,7 @@ export default function HomePage() {
                 © 2026 ReelSnap. {t.footer.copyright}
               </p>
               <div className="flex items-center gap-2 text-[10.5px] font-bold text-slate-500 dark:text-zinc-500 flex-wrap justify-center">
-                <span>Built for Speed & Security</span>
-                <span>•</span>
-                <span>SSRF Protected</span>
+                <span>{t.footer.tagBottomRight}</span>
               </div>
             </div>
           </div>

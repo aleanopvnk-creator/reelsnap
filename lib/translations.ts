@@ -13,12 +13,14 @@ export interface TranslationDictionary {
   };
   categories: {
     reels: string;
-    video: string;
+    carousel: string;
     audio: string;
+    photo: string;
     placeholders: {
       reels: string;
-      video: string;
+      carousel: string;
       audio: string;
+      photo: string;
     };
   };
   hero: {
@@ -116,44 +118,45 @@ export interface TranslationDictionary {
     title: string;
     p1: string;
     p2: string;
-    metric1Value: string;
-    metric1Label: string;
-    metric1Desc: string;
-    metric2Value: string;
-    metric2Label: string;
-    metric2Desc: string;
-    metric3Value: string;
-    metric3Label: string;
-    metric3Desc: string;
-    metric4Value: string;
-    metric4Label: string;
-    metric4Desc: string;
+    pills: {
+      pill1: string;
+      pill2: string;
+      pill3: string;
+    };
+    bento: {
+      card1Title: string;
+      card1Desc: string;
+      card2Title: string;
+      card2Desc: string;
+      card3Title: string;
+      card3Desc: string;
+      card4Title: string;
+      card4Desc: string;
+    };
   };
   footer: {
     tagline: string;
-    followLabel: string;
+    statusActive: string;
+    platforms: string;
     col2Title: string;
+    serviceReels: string;
+    serviceCarousel: string;
+    serviceAudio: string;
+    servicePhoto: string;
     col3Title: string;
-    col4Title: string;
     navHome: string;
     navHowTo: string;
     navFeatures: string;
     navFaq: string;
     navAbout: string;
-    ethicsCopyright: string;
-    ethicsPublicOnly: string;
-    ethicsNoStorage: string;
-    ethicsSsrf: string;
-    privacy: string;
-    terms: string;
-    dmca: string;
-    help: string;
-    contactIg: string;
-    contactTiktok: string;
-    contactWa: string;
-    contactHours: string;
+    col4Title: string;
+    legalPrivacy: string;
+    legalTerms: string;
+    legalDmca: string;
+    legalHelp: string;
     disclaimer: string;
     copyright: string;
+    tagBottomRight: string;
   };
   pwaModal: {
     title: string;
@@ -180,12 +183,14 @@ export const translations: Record<Language, TranslationDictionary> = {
     },
     categories: {
       reels: "Video Reels",
-      video: "Video Feed / Post",
+      carousel: "Album Karusel",
       audio: "Audio MP3",
+      photo: "Foto HD",
       placeholders: {
-        reels: "Tempel tautan Instagram Reels di sini...",
-        video: "Tempel tautan Video Instagram di sini...",
-        audio: "Tempel tautan Reels untuk mengambil Audio MP3...",
+        reels: "Tempel tautan video Instagram Reels di sini...",
+        carousel: "Tempel tautan album Karusel Instagram (hingga 20 foto/video)...",
+        audio: "Tempel tautan Reels untuk ekstrak Audio MP3 (192 kbps)...",
+        photo: "Tempel tautan postingan foto Instagram HD di sini...",
       },
     },
     hero: {
@@ -284,50 +289,51 @@ export const translations: Record<Language, TranslationDictionary> = {
       subtitle: "Jawaban seputar layanan download Instagram Reels dan foto postingan HD dengan ReelSnap",
     },
     about: {
-      badge: "Tentang ReelSnap",
-      title: "Layanan Pengunduh Media Instagram Terpercaya & Bersih",
-      p1: "ReelSnap hadir sebagai platform pengunduh konten Instagram modern yang dirancang untuk kecepatan, kemudahan, dan kenyamanan pengguna di semua perangkat. Kami berkomitmen menyediakan layanan unduh video Reels, foto postingan HD (termasuk karusel foto multi-slide), serta ekstraksi audio musik MP3 192 kbps berkualitas jernih yang 100% bersih, cepat, dan sepenuhnya bebas dari iklan spam, pop-up pengalih perhatian, atau keharusan memasang aplikasi tambahan.",
-      p2: "Sistem ReelSnap dibangun di atas arsitektur keamanan server berstandar tinggi: perlindungan aktif pencegahan SSRF (Server-Side Request Forgery), filter domain ketat yang hanya terhubung ke domain resmi Meta dan CDN CDN terverifikasi, pembatasan laju (rate limiting) pintar untuk mencegah bot berbahaya, serta jaminan privasi mutlak tanpa pencatatan tautan URL atau penyimpanan berkas pribadi pengguna di database kami.",
-      metric1Value: "100%",
-      metric1Label: "Privasi Terjaga",
-      metric1Desc: "Tanpa log riwayat URL",
-      metric2Value: "< 2s",
-      metric2Label: "Waktu Respons",
-      metric2Desc: "Ekstraksi instan kilat",
-      metric3Value: "1080p",
-      metric3Label: "Maksimum Resolusi",
-      metric3Desc: "Kualitas Full HD asli",
-      metric4Value: "MP3",
-      metric4Label: "Audio Terpisah",
-      metric4Desc: "Bitrate jernih 192 kbps",
+      badge: "✨ EKOSISTEM MEDIA INSTAGRAM",
+      title: "Dirancang Khusus untuk Menyimpan Momen Visual & Audio Instagram",
+      p1: "ReelSnap dibangun khusus untuk menangani format media unik Instagram—mulai dari video vertikal Reels beresolusi tinggi, album galeri Karusel hingga 20 slide sekaligus, hingga ekstraksi musik latar atau sound asli menjadi berkas MP3 berkualitas jernih.",
+      p2: "Sistem kami berjalan langsung melalui jalur streaming terenkripsi ke jaringan CDN resmi Instagram tanpa menyimpan riwayat tautan pengguna di database, dilengkapi proteksi keamanan server otomatis dan sepenuhnya bebas dari iklan pop-up yang mengganggu.",
+      pills: {
+        pill1: "✓ Tanpa Login Akun",
+        pill2: "✓ Bebas Tanda Air",
+        pill3: "✓ Kompatibel iOS & Android",
+      },
+      bento: {
+        card1Title: "Karusel Multi-Slide",
+        card1Desc: "Unduh hingga 20 foto & video dari satu tautan album sekaligus.",
+        card2Title: "Kualitas Asli 1080p",
+        card2Desc: "Resolusi visual utuh sesuai unggahan asli kreator tanpa kompresi.",
+        card3Title: "Konverter Audio MP3",
+        card3Desc: "Pisahkan musik atau suara asli Reels menjadi file audio jernih.",
+        card4Title: "Privasi Tanpa Jejak",
+        card4Desc: "0% penyimpanan database. Riwayat hanya tersimpan lokal di perangkat Anda.",
+      },
     },
     footer: {
       tagline:
-        "Snap Your Favorite Reels. Unduh video Instagram berkualitas tinggi dengan antarmuka yang bersih, cepat, dan mudah digunakan di segala perangkat.",
-      followLabel: "IKUTI & HUBUNGI KAMI:",
-      col2Title: "Navigasi Cepat",
-      col3Title: "Keamanan & Etika",
-      col4Title: "Media Sosial & Kontak",
-      navHome: "Beranda",
-      navHowTo: "Cara Pakai",
-      navFeatures: "Keunggulan Layanan",
-      navFaq: "Tanya Jawab (FAQ)",
-      navAbout: "Tentang Kami",
-      ethicsCopyright: "Hormati Hak Cipta Kreator",
-      ethicsPublicOnly: "Hanya Konten Publik Sah",
-      ethicsNoStorage: "Tanpa Penyimpanan Data",
-      ethicsSsrf: "Protokol Keamanan SSRF",
-      privacy: "Kebijakan Privasi",
-      terms: "Ketentuan Layanan",
-      dmca: "DMCA & Hak Cipta",
-      help: "Pusat Bantuan",
-      contactIg: "Instagram @reelsnap",
-      contactTiktok: "TikTok @reelsnap.id",
-      contactWa: "WhatsApp Support",
-      contactHours: "Dukungan Cepat 24 Jam",
+        "Solusi instan pengunduh konten kreatif Instagram—simpan Reels, album Karusel, foto HD, dan audio MP3 langsung ke galeri perangkat Anda tanpa batas.",
+      statusActive: "Jaringan Ekstraksi Instagram Aktif",
+      platforms: "iPhone / iPad • Android • Windows & Mac",
+      col2Title: "LAYANAN INSTAGRAM",
+      serviceReels: "Pengunduh Video Reels",
+      serviceCarousel: "Pengunduh Album Karusel",
+      serviceAudio: "Ekstraktor Audio MP3",
+      servicePhoto: "Pengunduh Foto & Thumbnail",
+      col3Title: "PANDUAN & FITUR",
+      navHome: "Beranda Utama",
+      navHowTo: "Cara Mengunduh (3 Langkah)",
+      navFeatures: "Keunggulan ReelSnap",
+      navFaq: "Pertanyaan Umum (FAQ)",
+      navAbout: "Mengenal ReelSnap",
+      col4Title: "LEGALITAS & BANTUAN",
+      legalPrivacy: "Kebijakan Privasi",
+      legalTerms: "Ketentuan Layanan",
+      legalDmca: "Penafian Hak Cipta (DMCA)",
+      legalHelp: "Pusat Bantuan & Kontak",
       disclaimer:
-        "Pernyataan Hukum (Disclaimer): ReelSnap adalah platform utilitas pihak ketiga yang berdiri sendiri dan tidak berafiliasi, didukung, disponsori, atau terkait secara resmi dengan Instagram, Meta Platforms, Inc., atau entitas anak perusahaannya. Seluruh merek dagang, logo, nama akun, dan konten visual adalah hak milik dari pemilik hak cipta masing-masing. ReelSnap ditujukan hanya untuk keperluan pengarsipan pribadi yang sah sesuai dengan asas Penggunaan Wajar (Fair Use) dan perundang-undangan hak cipta yang berlaku.",
-      copyright: "Hak Cipta Dilindungi Undang-Undang.",
+        "ReelSnap adalah alat utilitas independen dan tidak berafiliasi dengan Instagram atau Meta Platforms, Inc. Seluruh hak kekayaan intelektual atas konten media yang diunduh sepenuhnya menjadi milik masing-masing kreator.",
+      copyright: "Seluruh Hak Cipta Dilindungi.",
+      tagBottomRight: "Dibuat untuk Kreator & Pengarsip Konten",
     },
     pwaModal: {
       title: "Pasang ReelSnap di Layar Utama",
@@ -353,12 +359,14 @@ export const translations: Record<Language, TranslationDictionary> = {
     },
     categories: {
       reels: "Reels Video",
-      video: "Feed Video",
-      audio: "Audio MP3",
+      carousel: "Carousel Album",
+      audio: "MP3 Audio",
+      photo: "HD Photo",
       placeholders: {
-        reels: "Paste Instagram Reels link here...",
-        video: "Paste Instagram Video link here...",
-        audio: "Paste Reels link to extract MP3 Audio...",
+        reels: "Paste Instagram Reels video link here...",
+        carousel: "Paste Instagram Carousel album link (up to 20 slides)...",
+        audio: "Paste Reels link to extract MP3 Audio (192 kbps)...",
+        photo: "Paste Instagram HD photo link here...",
       },
     },
     hero: {
@@ -454,50 +462,51 @@ export const translations: Record<Language, TranslationDictionary> = {
       subtitle: "Answers about downloading Instagram Reels and HD photo posts with ReelSnap",
     },
     about: {
-      badge: "About ReelSnap",
-      title: "Trusted & Safe Instagram Media Downloader Service",
-      p1: "ReelSnap is a modern Instagram content downloader platform engineered for speed, simplicity, and user comfort across all devices. We are dedicated to providing seamless downloading for Instagram Reels videos, HD photo posts (including multi-slide photo carousels), and crystal-clear 192 kbps MP3 music extraction—100% free from spam advertisements, misleading popups, or unnecessary app installations.",
-      p2: "Built upon an enterprise-grade server security architecture: active SSRF (Server-Side Request Forgery) prevention, strict domain filtering limited exclusively to verified Meta and Instagram CDN endpoints, intelligent rate limiting against malicious abuse, and an uncompromising privacy policy with zero URL logging or user data retention in our databases.",
-      metric1Value: "100%",
-      metric1Label: "Privacy Protected",
-      metric1Desc: "Zero URL logging policy",
-      metric2Value: "< 2s",
-      metric2Label: "Response Time",
-      metric2Desc: "Lightning fast extraction",
-      metric3Value: "1080p",
-      metric3Label: "Max Resolution",
-      metric3Desc: "Original Full HD quality",
-      metric4Value: "MP3",
-      metric4Label: "Dedicated Audio",
-      metric4Desc: "Crystal clear 192 kbps",
+      badge: "✨ INSTAGRAM MEDIA ECOSYSTEM",
+      title: "Specifically Crafted to Preserve Instagram Visual & Audio Moments",
+      p1: "ReelSnap is purpose-built to handle Instagram's unique media ecosystem—ranging from high-resolution vertical Reels, multi-slide Carousel albums up to 20 items, to extracting original background audio and music into crisp MP3 files.",
+      p2: "Our system operates directly via encrypted streaming conduits to official Instagram CDN networks without recording user link history in databases, fortified with automated server safeguards and 100% free of invasive pop-up ads.",
+      pills: {
+        pill1: "✓ No Account Login",
+        pill2: "✓ Zero Watermark",
+        pill3: "✓ iOS & Android Compatible",
+      },
+      bento: {
+        card1Title: "Multi-Slide Carousel",
+        card1Desc: "Download up to 20 photos & videos from a single album link.",
+        card2Title: "Original 1080p Quality",
+        card2Desc: "Full visual resolution matching the creator's original upload without compression.",
+        card3Title: "MP3 Audio Converter",
+        card3Desc: "Extract original Reels music or background sound into clean audio.",
+        card4Title: "Zero-Trace Privacy",
+        card4Desc: "0% database storage. History is strictly saved locally on your device.",
+      },
     },
     footer: {
       tagline:
-        "Snap Your Favorite Reels. Download high quality Instagram videos and photos with a clean, fast, and intuitive interface on any device.",
-      followLabel: "FOLLOW & CONTACT US:",
-      col2Title: "Quick Navigation",
-      col3Title: "Security & Ethics",
-      col4Title: "Social & Contact",
-      navHome: "Home",
-      navHowTo: "How to Use",
-      navFeatures: "Key Features",
-      navFaq: "FAQ",
-      navAbout: "About Us",
-      ethicsCopyright: "Respect Creator Copyright",
-      ethicsPublicOnly: "Public Content Only",
-      ethicsNoStorage: "Zero Data Storage",
-      ethicsSsrf: "SSRF Security Protocol",
-      privacy: "Privacy Policy",
-      terms: "Terms of Service",
-      dmca: "DMCA & Disclaimer",
-      help: "Help Center",
-      contactIg: "Instagram @reelsnap",
-      contactTiktok: "TikTok @reelsnap.id",
-      contactWa: "WhatsApp Support",
-      contactHours: "24/7 Fast Community Support",
+        "Instant downloader solution for Instagram creative content—save Reels, Carousel albums, HD photos, and MP3 audio directly to your device gallery without limits.",
+      statusActive: "Instagram Extraction Network Active",
+      platforms: "iPhone / iPad • Android • Windows & Mac",
+      col2Title: "INSTAGRAM SERVICES",
+      serviceReels: "Reels Video Downloader",
+      serviceCarousel: "Carousel Album Downloader",
+      serviceAudio: "MP3 Audio Extractor",
+      servicePhoto: "Photo & Thumbnail Downloader",
+      col3Title: "GUIDE & FEATURES",
+      navHome: "Main Home",
+      navHowTo: "How to Download (3 Steps)",
+      navFeatures: "ReelSnap Advantages",
+      navFaq: "Frequently Asked Questions (FAQ)",
+      navAbout: "About ReelSnap",
+      col4Title: "LEGAL & SUPPORT",
+      legalPrivacy: "Privacy Policy",
+      legalTerms: "Terms of Service",
+      legalDmca: "Copyright & DMCA Disclaimer",
+      legalHelp: "Help & Contact Center",
       disclaimer:
-        "Legal Disclaimer: ReelSnap is an independent third-party web utility and is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Instagram, Meta Platforms, Inc., or any of their subsidiaries. All trademarks, logos, and media content belong to their respective copyright owners. ReelSnap is intended strictly for personal archival use in compliance with Fair Use principles and relevant copyright laws.",
+        "ReelSnap is an independent utility tool not affiliated with Instagram or Meta Platforms, Inc. All intellectual property rights of downloaded media content remain with their respective creators.",
       copyright: "All Rights Reserved.",
+      tagBottomRight: "Crafted for Creators & Content Archivists",
     },
     pwaModal: {
       title: "Install ReelSnap to Home Screen",
