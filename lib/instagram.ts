@@ -19,7 +19,7 @@ export interface InstagramMediaItem {
 export interface InstagramMediaData {
   success: true;
   shortcode: string;
-  mediaType: "video" | "image" | "carousel";
+  mediaType: "video" | "image";
   videoUrl?: string;
   audioUrl?: string;
   imageUrl?: string;
@@ -478,7 +478,7 @@ async function extractViaCrawler(shortcode: string): Promise<InstagramMediaData 
           return {
             success: true,
             shortcode,
-            mediaType: "carousel",
+            mediaType: first.type === "video" ? "video" : "image",
             videoUrl: first.type === "video" ? first.url : undefined,
             audioUrl: first.type === "video" ? first.url : undefined,
             imageUrl: first.type === "image" ? first.url : undefined,
@@ -667,7 +667,7 @@ async function extractViaGraphQL(shortcode: string): Promise<InstagramMediaData 
           return {
             success: true,
             shortcode,
-            mediaType: "carousel",
+            mediaType: first.type === "video" ? "video" : "image",
             videoUrl: first.type === "video" ? first.url : undefined,
             audioUrl: first.type === "video" ? first.url : undefined,
             imageUrl: first.type === "image" ? first.url : undefined,
@@ -930,8 +930,7 @@ async function extractViaRapidAPI(
 
         if (items.length > 0) {
           const first = items[0];
-          const isCarousel = items.length > 1;
-          const mediaType = isCarousel ? "carousel" : first.type;
+          const mediaType: "video" | "image" = first.type === "video" ? "video" : "image";
 
           return {
             success: true,

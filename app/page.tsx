@@ -25,16 +25,13 @@ import {
   Moon,
   Clock,
   Image as ImageIcon,
-  Layers,
+  Camera,
   Film,
   Headphones,
   ScanSearch,
   Infinity,
-  ChevronLeft,
-  ChevronRight,
   Info,
   Menu,
-  Sparkles,
 } from "lucide-react";
 import FaqAccordion from "@/components/FaqAccordion";
 import AdSlot from "@/components/AdSlot";
@@ -52,7 +49,7 @@ export interface MediaItem {
 
 export interface ExtractionData {
   shortcode: string;
-  mediaType: "video" | "image" | "carousel";
+  mediaType: "video" | "image";
   videoUrl?: string;
   audioUrl?: string;
   imageUrl?: string;
@@ -71,7 +68,7 @@ export interface DownloadHistoryItem {
   thumbnailUrl: string;
   author: string;
   caption: string;
-  mediaType: "video" | "image" | "carousel";
+  mediaType: "video" | "image";
   timestamp: number;
   timeFormatted?: string;
 }
@@ -85,13 +82,11 @@ export default function HomePage() {
   const [isCaptionExpanded, setIsCaptionExpanded] = useState(false);
   const [downloadingVideo, setDownloadingVideo] = useState(false);
   const [downloadingAudio, setDownloadingAudio] = useState(false);
-  const [downloadingPhoto, setDownloadingPhoto] = useState<number | boolean>(false);
-  const [downloadingAll, setDownloadingAll] = useState(false);
-  const [activeCarouselIndex, setActiveCarouselIndex] = useState(0);
+  const [downloadingPhoto, setDownloadingPhoto] = useState(false);
   const [modalTab, setModalTab] = useState<ModalTab | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<"reels" | "carousel" | "audio" | "photo">("reels");
+  const [activeCategory, setActiveCategory] = useState<"reels" | "audio" | "photo">("reels");
 
   // Production Features
   const [lang, setLang] = useState<Language>("id");
@@ -105,7 +100,7 @@ export default function HomePage() {
   const t = translations[lang];
 
   // Interactive handler for services from Hero or Footer
-  const handleSelectService = (category: "reels" | "carousel" | "audio" | "photo") => {
+  const handleSelectService = (category: "reels" | "audio" | "photo") => {
     setActiveCategory(category);
     scrollToSection("hero");
     setTimeout(() => {
@@ -277,7 +272,6 @@ export default function HomePage() {
       setError(null);
       setData(null);
       setIsCaptionExpanded(false);
-      setActiveCarouselIndex(0);
 
       try {
         const response = await fetch("/api/extract", {
@@ -440,17 +434,16 @@ export default function HomePage() {
     setTimeout(() => setDownloadingAudio(false), 2500);
   };
 
-  const handleDownloadPhoto = (photoUrl?: string, itemIndex?: number) => {
-    const targetPhoto = photoUrl || data?.imageUrl || data?.thumbnailUrl;
+  const handleDownloadPhoto = (photoUrl?: string) => {
+    const targetPhoto = photoUrl || data?.imageUrl || (data?.items && data.items[0]?.url) || data?.thumbnailUrl;
     if (!targetPhoto) return;
-    setDownloadingPhoto(itemIndex !== undefined ? itemIndex : true);
+    setDownloadingPhoto(true);
 
-    const indexSuffix = itemIndex !== undefined ? `-${itemIndex + 1}` : "";
-    const downloadUrl = `/api/download?url=${encodeURIComponent(targetPhoto)}&filename=ReelSnap-Photo-${data?.shortcode}${indexSuffix}.jpg&type=image`;
+    const downloadUrl = `/api/download?url=${encodeURIComponent(targetPhoto)}&filename=ReelSnap-Photo-${data?.shortcode}.jpg&type=image`;
 
     const link = document.createElement("a");
     link.href = downloadUrl;
-    link.setAttribute("download", `ReelSnap-Photo-${data?.shortcode}${indexSuffix}.jpg`);
+    link.setAttribute("download", `ReelSnap-Photo-${data?.shortcode}.jpg`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -458,27 +451,9 @@ export default function HomePage() {
     setTimeout(() => setDownloadingPhoto(false), 2000);
   };
 
-  const handleDownloadAllPhotos = async () => {
-    if (!data?.items || data.items.length === 0) return;
-    setDownloadingAll(true);
-    for (let i = 0; i < data.items.length; i++) {
-      const item = data.items[i];
-      const link = document.createElement("a");
-      const downloadUrl = `/api/download?url=${encodeURIComponent(item.url)}&filename=ReelSnap-Photo-${data.shortcode}-${i + 1}.jpg&type=image`;
-      link.href = downloadUrl;
-      link.setAttribute("download", `ReelSnap-Photo-${data.shortcode}-${i + 1}.jpg`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      await new Promise((r) => setTimeout(r, 450));
-    }
-    setTimeout(() => setDownloadingAll(false), 1200);
-  };
-
   const handleReset = () => {
     setData(null);
     setUrl("");
-    setActiveCarouselIndex(0);
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       setTimeout(() => {
@@ -490,20 +465,17 @@ export default function HomePage() {
 
   // Media flags and item resolution
   const isVideo = data?.mediaType === "video";
-  const isCarousel = data?.mediaType === "carousel" && Array.isArray(data?.items) && data.items.length > 1;
-  const currentItem = isCarousel && data?.items ? data.items[activeCarouselIndex] : null;
-
-  const currentPhotoUrl = currentItem?.url || data?.imageUrl || data?.thumbnailUrl || "";
+  const currentPhotoUrl = data?.imageUrl || (data?.items && data.items[0]?.url) || data?.thumbnailUrl || "";
   const proxiedPhotoUrl = currentPhotoUrl
-    ? `/api/download?url=${encodeURIComponent(currentPhotoUrl)}&filename=photo-${data?.shortcode}-${activeCarouselIndex + 1}.jpg&type=image`
+    ? `/api/download?url=${encodeURIComponent(currentPhotoUrl)}&filename=photo-${data?.shortcode}.jpg&type=image`
     : "";
 
-  const proxiedVideoUrl = (currentItem?.type === "video" ? currentItem.url : data?.videoUrl)
-    ? `/api/download?url=${encodeURIComponent(currentItem?.type === "video" ? currentItem.url : data!.videoUrl!)}&filename=preview-${data?.shortcode}.mp4`
+  const proxiedVideoUrl = data?.videoUrl
+    ? `/api/download?url=${encodeURIComponent(data.videoUrl)}&filename=preview-${data?.shortcode}.mp4`
     : "";
 
-  const proxiedThumbnailUrl = (currentItem?.thumbnailUrl || data?.thumbnailUrl)
-    ? `/api/download?url=${encodeURIComponent(currentItem?.thumbnailUrl || data!.thumbnailUrl)}&filename=poster-${data?.shortcode}.jpg&type=image`
+  const proxiedThumbnailUrl = data?.thumbnailUrl
+    ? `/api/download?url=${encodeURIComponent(data.thumbnailUrl)}&filename=poster-${data?.shortcode}.jpg&type=image`
     : "";
 
   return (
@@ -822,20 +794,6 @@ export default function HomePage() {
                 <span>{t.categories.reels}</span>
               </button>
 
-              <button
-                type="button"
-                onClick={() => handleSelectService("carousel")}
-                className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  activeCategory === "carousel"
-                    ? "bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white shadow-md shadow-pink-500/25 scale-[1.02]"
-                    : theme === "light"
-                    ? "bg-white border border-slate-300 text-slate-700 hover:bg-slate-100"
-                    : "bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800"
-                }`}
-              >
-                <Layers className="w-3.5 h-3.5" />
-                <span>{t.categories.carousel}</span>
-              </button>
 
               <button
                 type="button"
@@ -1128,7 +1086,7 @@ export default function HomePage() {
                 {/* Left Column: Responsive Uncropped Media Player & Image Viewer */}
                 <div className="md:col-span-5 flex flex-col items-center justify-center w-full">
                   <div className="w-full max-w-[320px] xs:max-w-[340px] sm:max-w-[360px] md:max-w-[380px] min-h-[260px] max-h-[500px] flex items-center justify-center bg-black/95 dark:bg-black rounded-2xl overflow-hidden shadow-2xl border border-zinc-800/90 relative group p-2">
-                    {isVideo || currentItem?.type === "video" ? (
+                    {isVideo ? (
                       <video
                         key={proxiedVideoUrl}
                         src={proxiedVideoUrl}
@@ -1156,70 +1114,6 @@ export default function HomePage() {
                       </div>
                     )}
                   </div>
-
-                  {/* Multi-item carousel thumbnail slider */}
-                  {isCarousel && data.items && data.items.length > 1 && (
-                    <div className="w-full max-w-[320px] xs:max-w-[340px] sm:max-w-[360px] md:max-w-[380px] mt-3">
-                      <div className="flex items-center justify-between text-[11px] font-bold text-zinc-400 dark:text-zinc-400 mb-1.5 px-1">
-                        <span>
-                          {t.result.slideOf} {activeCarouselIndex + 1} / {data.items.length}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setActiveCarouselIndex((prev) =>
-                                prev > 0 ? prev - 1 : data.items!.length - 1
-                              )
-                            }
-                            className="p-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition-colors cursor-pointer"
-                            title="Foto Sebelumnya"
-                          >
-                            <ChevronLeft className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setActiveCarouselIndex((prev) =>
-                                prev < data.items!.length - 1 ? prev + 1 : 0
-                              )
-                            }
-                            className="p-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition-colors cursor-pointer"
-                            title="Foto Selanjutnya"
-                          >
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 overflow-x-auto py-1 px-0.5 scrollbar-thin">
-                        {data.items.map((item, idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => setActiveCarouselIndex(idx)}
-                            className={`relative w-12 h-12 rounded-lg overflow-hidden border-2 shrink-0 transition-all cursor-pointer ${
-                              activeCarouselIndex === idx
-                                ? "border-pink-500 scale-105 shadow-md shadow-pink-500/30"
-                                : "border-zinc-700/60 opacity-60 hover:opacity-100"
-                            }`}
-                          >
-                            <img
-                              src={`/api/download?url=${encodeURIComponent(
-                                item.thumbnailUrl || item.url
-                              )}&filename=thumb-${data.shortcode}-${idx}.jpg&type=image`}
-                              alt={`Slide ${idx + 1}`}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                            />
-                            <span className="absolute bottom-0.5 right-0.5 px-1 rounded bg-black/80 text-[8px] font-bold text-white">
-                              {idx + 1}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Right Column: Media Details & Actions */}
@@ -1248,13 +1142,6 @@ export default function HomePage() {
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30">
                               <Video className="w-3 h-3" />
                               <span>{t.result.videoBadge}</span>
-                            </span>
-                          ) : isCarousel ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-pink-500/15 text-pink-600 dark:text-pink-400 border border-pink-500/30">
-                              <Layers className="w-3 h-3" />
-                              <span>
-                                {t.result.carouselBadge} ({data.items?.length || 0})
-                              </span>
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
@@ -1438,57 +1325,29 @@ export default function HomePage() {
                       </>
                     )}
 
-                    {/* PHOTO DOWNLOAD OPTIONS (Single Photo or Carousel) */}
+                    {/* PHOTO DOWNLOAD OPTIONS (Single Photo) */}
                     {!isVideo && (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => handleDownloadPhoto(currentPhotoUrl, activeCarouselIndex)}
-                          disabled={Boolean(downloadingPhoto)}
-                          className="w-full h-11 sm:h-12 px-4 rounded-xl bg-ig-gradient bg-ig-gradient-hover text-white font-black text-xs sm:text-sm md:text-base shadow-lg shadow-pink-500/25 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
-                        >
-                          {downloadingPhoto ? (
-                            <>
-                              <RefreshCw className="w-4 h-4 animate-spin" />
-                              <span>{t.result.preparingPhoto}</span>
-                            </>
-                          ) : (
-                            <>
-                              <Download className="w-4 h-4 stroke-[2.5]" />
-                              <span>
-                                {isCarousel ? t.result.downloadCurrentPhoto : t.result.downloadPhoto}
-                              </span>
-                              <span className="hidden xs:inline text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/20">
-                                HD Asli
-                              </span>
-                            </>
-                          )}
-                        </button>
-
-                        {/* If Carousel: Show Download All Photos */}
-                        {isCarousel && data.items && data.items.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={handleDownloadAllPhotos}
-                            disabled={downloadingAll}
-                            className="w-full h-11 sm:h-12 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black text-xs sm:text-sm md:text-base shadow-lg shadow-purple-500/20 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
-                          >
-                            {downloadingAll ? (
-                              <>
-                                <RefreshCw className="w-4 h-4 animate-spin" />
-                                <span>{t.result.preparingPhoto}</span>
-                              </>
-                            ) : (
-                              <>
-                                <Layers className="w-4 h-4 stroke-[2.5]" />
-                                <span>
-                                  {t.result.downloadAllPhotos} ({data.items.length} Foto)
-                                </span>
-                              </>
-                            )}
-                          </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDownloadPhoto(currentPhotoUrl)}
+                        disabled={downloadingPhoto}
+                        className="w-full h-11 sm:h-12 px-4 rounded-xl bg-ig-gradient bg-ig-gradient-hover text-white font-black text-xs sm:text-sm md:text-base shadow-lg shadow-pink-500/25 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
+                      >
+                        {downloadingPhoto ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 animate-spin" />
+                            <span>{t.result.preparingPhoto}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Download className="w-4 h-4 stroke-[2.5]" />
+                            <span>{t.result.downloadPhoto}</span>
+                            <span className="hidden xs:inline text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/20">
+                              HD Asli
+                            </span>
+                          </>
                         )}
-                      </>
+                      </button>
                     )}
 
                     {/* Reset / Unduh Media Lainnya */}
@@ -1729,7 +1588,7 @@ export default function HomePage() {
               <div className="relative z-10">
                 {/* Instagram Gradient Badge */}
                 <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-gradient-to-r from-pink-500/15 via-rose-500/15 to-amber-500/15 border border-pink-500/30 text-pink-700 dark:text-pink-300 mb-4 shadow-sm">
-                  <Sparkles className="w-3.5 h-3.5 text-pink-500 animate-pulse" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-pink-500" />
                   <span>{t.about.badge}</span>
                 </div>
 
@@ -1761,7 +1620,7 @@ export default function HomePage() {
 
             {/* Right Column: 2x2 Bento Feature Cards (45% / 5 cols) */}
             <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
-              {/* Card 1: Karusel Multi-Slide */}
+              {/* Card 1: Unduhan Video Reels */}
               <div
                 className={`rounded-3xl border-2 p-5 sm:p-6 backdrop-blur-md relative overflow-hidden transition-all flex flex-col justify-between hover:scale-[1.01] ${
                   theme === "light"
@@ -1770,8 +1629,8 @@ export default function HomePage() {
                 }`}
               >
                 <div>
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-pink-500/25 mb-3.5">
-                    <Layers className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 via-pink-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-pink-500/25 mb-3.5">
+                    <Film className="w-5 h-5" />
                   </div>
                   <h3 className="text-sm sm:text-base font-black text-slate-950 dark:text-white mb-1.5 leading-snug">
                     {t.about.bento.card1Title}
@@ -1782,17 +1641,17 @@ export default function HomePage() {
                 </p>
               </div>
 
-              {/* Card 2: Kualitas Asli 1080p */}
+              {/* Card 2: Foto Postingan HD */}
               <div
                 className={`rounded-3xl border-2 p-5 sm:p-6 backdrop-blur-md relative overflow-hidden transition-all flex flex-col justify-between hover:scale-[1.01] ${
                   theme === "light"
                     ? "bg-white border-slate-200 shadow-md hover:shadow-lg"
-                    : "bg-zinc-900/90 border-zinc-800 shadow-md hover:border-purple-500/30"
+                    : "bg-zinc-900/90 border-zinc-800 shadow-md hover:border-amber-500/30"
                 }`}
               >
                 <div>
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-600 to-rose-500 flex items-center justify-center text-white shadow-md shadow-purple-500/25 mb-3.5">
-                    <Sparkles className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 flex items-center justify-center text-white shadow-md shadow-amber-500/25 mb-3.5">
+                    <Camera className="w-5 h-5" />
                   </div>
                   <h3 className="text-sm sm:text-base font-black text-slate-950 dark:text-white mb-1.5 leading-snug">
                     {t.about.bento.card2Title}
@@ -1808,12 +1667,12 @@ export default function HomePage() {
                 className={`rounded-3xl border-2 p-5 sm:p-6 backdrop-blur-md relative overflow-hidden transition-all flex flex-col justify-between hover:scale-[1.01] ${
                   theme === "light"
                     ? "bg-white border-slate-200 shadow-md hover:shadow-lg"
-                    : "bg-zinc-900/90 border-zinc-800 shadow-md hover:border-amber-500/30"
+                    : "bg-zinc-900/90 border-zinc-800 shadow-md hover:border-purple-500/30"
                 }`}
               >
                 <div>
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-pink-500 flex items-center justify-center text-white shadow-md shadow-amber-500/25 mb-3.5">
-                    <Music className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-purple-500/25 mb-3.5">
+                    <Headphones className="w-5 h-5" />
                   </div>
                   <h3 className="text-sm sm:text-base font-black text-slate-950 dark:text-white mb-1.5 leading-snug">
                     {t.about.bento.card3Title}
@@ -1907,20 +1766,10 @@ export default function HomePage() {
                 <li>
                   <button
                     type="button"
-                    onClick={() => handleSelectService("carousel")}
-                    className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer text-left flex items-center gap-2 group"
-                  >
-                    <Layers className="w-3.5 h-3.5 text-purple-500 group-hover:scale-110 transition-transform" />
-                    <span>{t.footer.serviceCarousel}</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
                     onClick={() => handleSelectService("audio")}
                     className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer text-left flex items-center gap-2 group"
                   >
-                    <Music className="w-3.5 h-3.5 text-amber-500 group-hover:scale-110 transition-transform" />
+                    <Headphones className="w-3.5 h-3.5 text-purple-500 group-hover:scale-110 transition-transform" />
                     <span>{t.footer.serviceAudio}</span>
                   </button>
                 </li>
@@ -1930,7 +1779,7 @@ export default function HomePage() {
                     onClick={() => handleSelectService("photo")}
                     className="py-1 text-slate-600 hover:text-pink-600 dark:text-zinc-400 dark:hover:text-pink-400 transition-colors cursor-pointer text-left flex items-center gap-2 group"
                   >
-                    <ImageIcon className="w-3.5 h-3.5 text-rose-500 group-hover:scale-110 transition-transform" />
+                    <Camera className="w-3.5 h-3.5 text-amber-500 group-hover:scale-110 transition-transform" />
                     <span>{t.footer.servicePhoto}</span>
                   </button>
                 </li>

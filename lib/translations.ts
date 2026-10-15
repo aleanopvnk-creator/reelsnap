@@ -13,12 +13,10 @@ export interface TranslationDictionary {
   };
   categories: {
     reels: string;
-    carousel: string;
     audio: string;
     photo: string;
     placeholders: {
       reels: string;
-      carousel: string;
       audio: string;
       photo: string;
     };
@@ -72,14 +70,10 @@ export interface TranslationDictionary {
     downloadAudio: string;
     convertingAudio: string;
     downloadPhoto: string;
-    downloadCurrentPhoto: string;
-    downloadAllPhotos: string;
     preparingPhoto: string;
     downloadAnother: string;
     videoBadge: string;
     photoBadge: string;
-    carouselBadge: string;
-    slideOf: string;
     uncroppedLabel: string;
   };
   howTo: {
@@ -140,7 +134,6 @@ export interface TranslationDictionary {
     platforms: string;
     col2Title: string;
     serviceReels: string;
-    serviceCarousel: string;
     serviceAudio: string;
     servicePhoto: string;
     col3Title: string;
@@ -183,12 +176,10 @@ export const translations: Record<Language, TranslationDictionary> = {
     },
     categories: {
       reels: "Video Reels",
-      carousel: "Album Karusel",
       audio: "Audio MP3",
       photo: "Foto HD",
       placeholders: {
         reels: "Tempel tautan video Instagram Reels di sini...",
-        carousel: "Tempel tautan album Karusel Instagram (hingga 20 foto/video)...",
         audio: "Tempel tautan Reels untuk ekstrak Audio MP3 (192 kbps)...",
         photo: "Tempel tautan postingan foto Instagram HD di sini...",
       },
@@ -208,7 +199,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       emptyError: "Silakan masukkan tautan Reels atau foto Instagram terlebih dahulu.",
       clipboardError: "Peramban Anda tidak mengizinkan akses papan klip otomatis. Silakan tempel secara manual.",
       clipboardDenied: "Gagal membaca papan klip. Pastikan izin akses telah diberikan pada peramban Anda.",
-      supportedLinksInfo: "ⓘ Mendukung tautan resmi instagram.com/reel, /reels, /p (karusel), dan instagr.am",
+      supportedLinksInfo: "ⓘ Mendukung tautan resmi instagram.com/reel, /reels, /p, dan instagr.am",
       dropHere: "Lepaskan tautan Instagram di sini untuk memproses unduhan otomatis",
     },
     history: {
@@ -244,14 +235,10 @@ export const translations: Record<Language, TranslationDictionary> = {
       downloadAudio: "Download Audio (.MP3)",
       convertingAudio: "Mengonversi Audio MP3...",
       downloadPhoto: "Download Foto HD (.JPG)",
-      downloadCurrentPhoto: "Download Foto Ini (.JPG)",
-      downloadAllPhotos: "Download Semua Foto",
       preparingPhoto: "Menyiapkan Foto HD...",
       downloadAnother: "Download Media Lainnya",
       videoBadge: "Instagram Reels HD",
       photoBadge: "Postingan Foto HD",
-      carouselBadge: "Postingan Foto HD",
-      slideOf: "Foto ke-",
       uncroppedLabel: "Resolusi HD Penuh • Tidak Terpotong",
     },
     howTo: {
@@ -289,9 +276,9 @@ export const translations: Record<Language, TranslationDictionary> = {
       subtitle: "Jawaban seputar layanan download Instagram Reels dan foto postingan HD dengan ReelSnap",
     },
     about: {
-      badge: "✨ EKOSISTEM MEDIA INSTAGRAM",
+      badge: "EKOSISTEM MEDIA INSTAGRAM",
       title: "Dirancang Khusus untuk Menyimpan Momen Visual & Audio Instagram",
-      p1: "ReelSnap dibangun khusus untuk menangani format media unik Instagram—mulai dari video vertikal Reels beresolusi tinggi, album galeri Karusel hingga 20 slide sekaligus, hingga ekstraksi musik latar atau sound asli menjadi berkas MP3 berkualitas jernih.",
+      p1: "ReelSnap dibangun khusus untuk menangani format media Instagram—mulai dari video vertikal Reels beresolusi tinggi, foto postingan Full HD jernih tanpa kompresi, hingga ekstraksi musik latar atau sound asli menjadi berkas MP3 berkualitas jernih.",
       p2: "Sistem kami berjalan langsung melalui jalur streaming terenkripsi ke jaringan CDN resmi Instagram tanpa menyimpan riwayat tautan pengguna di database, dilengkapi proteksi keamanan server otomatis dan sepenuhnya bebas dari iklan pop-up yang mengganggu.",
       pills: {
         pill1: "✓ Tanpa Login Akun",
@@ -299,26 +286,25 @@ export const translations: Record<Language, TranslationDictionary> = {
         pill3: "✓ Kompatibel iOS & Android",
       },
       bento: {
-        card1Title: "Karusel Multi-Slide",
-        card1Desc: "Unduh hingga 20 foto & video dari satu tautan album sekaligus.",
-        card2Title: "Kualitas Asli 1080p",
-        card2Desc: "Resolusi visual utuh sesuai unggahan asli kreator tanpa kompresi.",
+        card1Title: "Unduhan Video Reels",
+        card1Desc: "Simpan video Reels vertikal kualitas 1080p MP4 dengan rasio asli dan bebas watermark.",
+        card2Title: "Foto Postingan HD",
+        card2Desc: "Resolusi visual utuh sesuai unggahan asli kreator tanpa kompresi gambar.",
         card3Title: "Konverter Audio MP3",
-        card3Desc: "Pisahkan musik atau suara asli Reels menjadi file audio jernih.",
+        card3Desc: "Pisahkan musik atau suara latar Reels menjadi file audio 192 kbps jernih.",
         card4Title: "Privasi Tanpa Jejak",
         card4Desc: "0% penyimpanan database. Riwayat hanya tersimpan lokal di perangkat Anda.",
       },
     },
     footer: {
       tagline:
-        "Solusi instan pengunduh konten kreatif Instagram—simpan Reels, album Karusel, foto HD, dan audio MP3 langsung ke galeri perangkat Anda tanpa batas.",
+        "Solusi instan pengunduh konten kreatif Instagram—simpan Reels, foto HD, dan audio MP3 langsung ke galeri perangkat Anda tanpa batas.",
       statusActive: "Jaringan Ekstraksi Instagram Aktif",
       platforms: "iPhone / iPad • Android • Windows & Mac",
       col2Title: "LAYANAN INSTAGRAM",
       serviceReels: "Pengunduh Video Reels",
-      serviceCarousel: "Pengunduh Album Karusel",
       serviceAudio: "Ekstraktor Audio MP3",
-      servicePhoto: "Pengunduh Foto & Thumbnail",
+      servicePhoto: "Pengunduh Foto HD",
       col3Title: "PANDUAN & FITUR",
       navHome: "Beranda Utama",
       navHowTo: "Cara Mengunduh (3 Langkah)",
@@ -359,12 +345,10 @@ export const translations: Record<Language, TranslationDictionary> = {
     },
     categories: {
       reels: "Reels Video",
-      carousel: "Carousel Album",
       audio: "MP3 Audio",
       photo: "HD Photo",
       placeholders: {
         reels: "Paste Instagram Reels video link here...",
-        carousel: "Paste Instagram Carousel album link (up to 20 slides)...",
         audio: "Paste Reels link to extract MP3 Audio (192 kbps)...",
         photo: "Paste Instagram HD photo link here...",
       },
@@ -384,7 +368,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       emptyError: "Please enter an Instagram Reel or photo link first.",
       clipboardError: "Your browser does not allow automatic clipboard access. Please paste manually.",
       clipboardDenied: "Failed to read clipboard. Ensure clipboard permission is granted in your browser.",
-      supportedLinksInfo: "ⓘ Supports official links: instagram.com/reel, /reels, /p (carousels), and instagr.am",
+      supportedLinksInfo: "ⓘ Supports official links: instagram.com/reel, /reels, /p, and instagr.am",
       dropHere: "Drop Instagram link here to auto-process download",
     },
     history: {
@@ -420,14 +404,10 @@ export const translations: Record<Language, TranslationDictionary> = {
       downloadAudio: "Download Audio (.MP3)",
       convertingAudio: "Converting MP3 Audio...",
       downloadPhoto: "Download HD Photo (.JPG)",
-      downloadCurrentPhoto: "Download This Photo (.JPG)",
-      downloadAllPhotos: "Download All Photos",
       preparingPhoto: "Preparing HD Photo...",
       downloadAnother: "Download Another Media",
       videoBadge: "Instagram Reels HD",
       photoBadge: "Instagram Photo HD",
-      carouselBadge: "Instagram Photos HD",
-      slideOf: "Photo",
       uncroppedLabel: "Full HD Resolution • Never Cropped",
     },
     howTo: {
@@ -462,9 +442,9 @@ export const translations: Record<Language, TranslationDictionary> = {
       subtitle: "Answers about downloading Instagram Reels and HD photo posts with ReelSnap",
     },
     about: {
-      badge: "✨ INSTAGRAM MEDIA ECOSYSTEM",
+      badge: "INSTAGRAM MEDIA ECOSYSTEM",
       title: "Specifically Crafted to Preserve Instagram Visual & Audio Moments",
-      p1: "ReelSnap is purpose-built to handle Instagram's unique media ecosystem—ranging from high-resolution vertical Reels, multi-slide Carousel albums up to 20 items, to extracting original background audio and music into crisp MP3 files.",
+      p1: "ReelSnap is purpose-built to handle Instagram's media formats—ranging from high-resolution vertical Reels videos, crystal-clear Full HD photo posts without compression, to extracting original background audio and music into crisp MP3 files.",
       p2: "Our system operates directly via encrypted streaming conduits to official Instagram CDN networks without recording user link history in databases, fortified with automated server safeguards and 100% free of invasive pop-up ads.",
       pills: {
         pill1: "✓ No Account Login",
@@ -472,26 +452,25 @@ export const translations: Record<Language, TranslationDictionary> = {
         pill3: "✓ iOS & Android Compatible",
       },
       bento: {
-        card1Title: "Multi-Slide Carousel",
-        card1Desc: "Download up to 20 photos & videos from a single album link.",
-        card2Title: "Original 1080p Quality",
-        card2Desc: "Full visual resolution matching the creator's original upload without compression.",
+        card1Title: "Reels Video Downloader",
+        card1Desc: "Download 1080p MP4 vertical Reels videos in original aspect ratio, watermark-free.",
+        card2Title: "HD Photo Downloader",
+        card2Desc: "Full visual resolution matching creator's original upload without compression.",
         card3Title: "MP3 Audio Converter",
-        card3Desc: "Extract original Reels music or background sound into clean audio.",
+        card3Desc: "Extract original Reels music or background sound into clean 192 kbps audio.",
         card4Title: "Zero-Trace Privacy",
         card4Desc: "0% database storage. History is strictly saved locally on your device.",
       },
     },
     footer: {
       tagline:
-        "Instant downloader solution for Instagram creative content—save Reels, Carousel albums, HD photos, and MP3 audio directly to your device gallery without limits.",
+        "Instant downloader solution for Instagram creative content—save Reels, HD photos, and MP3 audio directly to your device gallery without limits.",
       statusActive: "Instagram Extraction Network Active",
       platforms: "iPhone / iPad • Android • Windows & Mac",
       col2Title: "INSTAGRAM SERVICES",
       serviceReels: "Reels Video Downloader",
-      serviceCarousel: "Carousel Album Downloader",
       serviceAudio: "MP3 Audio Extractor",
-      servicePhoto: "Photo & Thumbnail Downloader",
+      servicePhoto: "HD Photo Downloader",
       col3Title: "GUIDE & FEATURES",
       navHome: "Main Home",
       navHowTo: "How to Download (3 Steps)",
