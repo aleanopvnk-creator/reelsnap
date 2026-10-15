@@ -31,35 +31,46 @@ function getFfmpegPath(): string {
  * Only allows Instagram / Facebook CDN and authorized media delivery domains
  */
 function isAllowedMediaHost(hostname: string): boolean {
+  const lower = hostname.toLowerCase().trim();
+
+  // Deny internal IP address representations, loopback, private ranges & cloud metadata services
+  const isBlockedIpOrInternal =
+    lower === "localhost" ||
+    lower === "127.0.0.1" ||
+    lower === "0.0.0.0" ||
+    lower === "::1" ||
+    lower === "[::1]" ||
+    lower.startsWith("127.") ||
+    lower.startsWith("10.") ||
+    lower.startsWith("192.168.") ||
+    lower.startsWith("169.254.") || // Cloud metadata IP
+    /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(lower) ||
+    lower.startsWith("fc00:") ||
+    lower.startsWith("fe80:") ||
+    lower.endsWith(".internal") ||
+    lower.endsWith(".local") ||
+    lower.endsWith(".localhost") ||
+    lower.endsWith(".corp") ||
+    lower.endsWith(".onion");
+
+  if (isBlockedIpOrInternal) {
+    return false;
+  }
+
+  // Strict whitelist of authorized official Meta / Instagram CDN media domains
   const allowedSuffixes = [
     ".cdninstagram.com",
     ".fbcdn.net",
     ".instagram.com",
-    ".akamaihd.net",
     ".facebook.com",
+    ".akamaihd.net",
+    ".lookaside.fbsbx.com",
     "cdninstagram.com",
     "fbcdn.net",
     "instagram.com",
-    "rapidapi.com",
+    "facebook.com",
+    "fna.fbcdn.net",
   ];
-
-  const lower = hostname.toLowerCase();
-
-  // Deny internal IP address representations
-  if (
-    lower === "localhost" ||
-    lower === "127.0.0.1" ||
-    lower === "0.0.0.0" ||
-    lower.startsWith("192.168.") ||
-    lower.startsWith("10.") ||
-    lower.startsWith("172.16.") ||
-    lower.startsWith("172.31.") ||
-    lower.startsWith("169.254.") ||
-    lower.endsWith(".internal") ||
-    lower.endsWith(".local")
-  ) {
-    return false;
-  }
 
   return allowedSuffixes.some((suffix) => lower === suffix || lower.endsWith(suffix));
 }
@@ -95,9 +106,9 @@ export async function GET(req: NextRequest) {
       return new Response("URL tidak valid.", { status: 400 });
     }
 
-    // SSRF verification
+    // SSRF verification: only allow verified Meta/Instagram CDN hosts
     if (!["http:", "https:"].includes(parsedUrl.protocol) || !isAllowedMediaHost(parsedUrl.hostname)) {
-      return new Response("Domain media tidak diizinkan.", { status: 403 });
+      return new Response("Akses domain media ditolak oleh protokol keamanan SSRF ReelSnap.", { status: 403 });
     }
 
     // Clean and sanitize filename

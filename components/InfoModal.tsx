@@ -1,9 +1,20 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { X, ShieldCheck, FileText, HelpCircle, AlertTriangle, ArrowRight } from "lucide-react";
+import {
+  X,
+  ShieldCheck,
+  FileText,
+  HelpCircle,
+  AlertTriangle,
+  Scale,
+  Mail,
+  ExternalLink,
+  ArrowRight,
+} from "lucide-react";
+import { Language } from "@/lib/translations";
 
-export type ModalTab = "privacy" | "terms" | "help";
+export type ModalTab = "privacy" | "terms" | "dmca" | "help";
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -11,6 +22,7 @@ interface InfoModalProps {
   activeTab: ModalTab;
   setActiveTab: (tab: ModalTab) => void;
   onScrollToFaq?: () => void;
+  lang?: Language;
 }
 
 export default function InfoModal({
@@ -19,6 +31,7 @@ export default function InfoModal({
   activeTab,
   setActiveTab,
   onScrollToFaq,
+  lang = "id",
 }: InfoModalProps) {
   // Close on Escape key press
   useEffect(() => {
@@ -41,6 +54,8 @@ export default function InfoModal({
 
   if (!isOpen) return null;
 
+  const isId = lang === "id";
+
   return (
     <div
       role="dialog"
@@ -50,253 +65,346 @@ export default function InfoModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-2xl max-h-[92vh] sm:max-h-[86vh] flex flex-col bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-zinc-800/80 bg-zinc-950/70">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-zinc-800/80 bg-slate-50/90 dark:bg-zinc-950/70">
           <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
             <img
               src="/icon.png"
               alt="ReelSnap Logo"
               className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0"
             />
-            <span id="info-modal-title" className="font-bold text-white text-sm sm:text-base md:text-lg truncate">
-              {activeTab === "privacy" && "Kebijakan Privasi"}
-              {activeTab === "terms" && "Ketentuan Layanan"}
-              {activeTab === "help" && "Pusat Bantuan ReelSnap"}
+            <span id="info-modal-title" className="font-bold text-slate-900 dark:text-white text-sm sm:text-base md:text-lg truncate">
+              {activeTab === "privacy" && (isId ? "Kebijakan Privasi" : "Privacy Policy")}
+              {activeTab === "terms" && (isId ? "Ketentuan Layanan" : "Terms of Service")}
+              {activeTab === "dmca" && (isId ? "DMCA & Penafian" : "DMCA & Disclaimer")}
+              {activeTab === "help" && (isId ? "Pusat Bantuan & Kontak" : "Help & Contact Center")}
             </span>
           </div>
           <button
             onClick={onClose}
-            aria-label="Tutup modal"
-            className="p-1.5 sm:p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer shrink-0 ml-2"
+            aria-label={isId ? "Tutup jendela" : "Close modal"}
+            className="p-1.5 sm:p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 transition-colors cursor-pointer shrink-0 ml-2"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Tab Navigation - Fully Responsive Segmented Bar without Truncation */}
-        <div className="p-2 sm:p-3 bg-zinc-950/50 border-b border-zinc-800/80">
-          <div className="grid grid-cols-3 gap-1 sm:gap-1.5 bg-zinc-900/90 p-1 rounded-xl sm:rounded-2xl border border-zinc-800">
+        {/* Tab Navigation - 4 Segmented Capsules */}
+        <div className="p-2 sm:p-3 bg-slate-100 dark:bg-zinc-950/70 border-b border-slate-200 dark:border-zinc-800/80">
+          <div className="grid grid-cols-4 gap-1 sm:gap-1.5 bg-slate-200/80 dark:bg-zinc-900/90 p-1 rounded-xl sm:rounded-2xl border border-slate-300 dark:border-zinc-800">
             <button
               onClick={() => setActiveTab("privacy")}
-              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 rounded-lg sm:rounded-xl text-[11px] sm:text-xs md:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-2 rounded-lg sm:rounded-xl text-[10.5px] sm:text-xs font-bold transition-all cursor-pointer ${
                 activeTab === "privacy"
-                  ? "bg-zinc-800 text-pink-400 shadow-md border border-pink-500/30"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-pink-600 text-white shadow-sm dark:bg-pink-500/20 dark:text-pink-300 dark:border dark:border-pink-500/40"
+                  : "text-slate-800 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
               }`}
             >
-              <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span className="sm:hidden">Privasi</span>
-              <span className="hidden sm:inline">Kebijakan Privasi</span>
+              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+              <span>{isId ? "Privasi" : "Privacy"}</span>
             </button>
             <button
               onClick={() => setActiveTab("terms")}
-              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 rounded-lg sm:rounded-xl text-[11px] sm:text-xs md:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-2 rounded-lg sm:rounded-xl text-[10.5px] sm:text-xs font-bold transition-all cursor-pointer ${
                 activeTab === "terms"
-                  ? "bg-zinc-800 text-purple-400 shadow-md border border-purple-500/30"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-purple-600 text-white shadow-sm dark:bg-purple-500/20 dark:text-purple-300 dark:border dark:border-purple-500/40"
+                  : "text-slate-800 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
               }`}
             >
-              <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span className="sm:hidden">Ketentuan</span>
-              <span className="hidden sm:inline">Ketentuan Layanan</span>
+              <FileText className="w-3.5 h-3.5 shrink-0" />
+              <span>{isId ? "Ketentuan" : "Terms"}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("dmca")}
+              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-2 rounded-lg sm:rounded-xl text-[10.5px] sm:text-xs font-bold transition-all cursor-pointer ${
+                activeTab === "dmca"
+                  ? "bg-rose-600 text-white shadow-sm dark:bg-rose-500/20 dark:text-rose-300 dark:border dark:border-rose-500/40"
+                  : "text-slate-800 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
+              }`}
+            >
+              <Scale className="w-3.5 h-3.5 shrink-0" />
+              <span>DMCA</span>
             </button>
             <button
               onClick={() => setActiveTab("help")}
-              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 rounded-lg sm:rounded-xl text-[11px] sm:text-xs md:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-2 rounded-lg sm:rounded-xl text-[10.5px] sm:text-xs font-bold transition-all cursor-pointer ${
                 activeTab === "help"
-                  ? "bg-zinc-800 text-amber-400 shadow-md border border-amber-500/30"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-amber-600 text-white shadow-sm dark:bg-amber-500/20 dark:text-amber-300 dark:border dark:border-amber-500/40"
+                  : "text-slate-800 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
               }`}
             >
-              <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span className="sm:hidden">Bantuan</span>
-              <span className="hidden sm:inline">Panduan Bantuan</span>
+              <HelpCircle className="w-3.5 h-3.5 shrink-0" />
+              <span>{isId ? "Bantuan" : "Help"}</span>
             </button>
           </div>
         </div>
 
         {/* Modal Body Content */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 text-xs sm:text-sm text-zinc-300 leading-relaxed custom-scrollbar">
-          {/* TAB: PRIVASI */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed custom-scrollbar">
+          {/* TAB: PRIVACY POLICY (Google AdSense Compliant) */}
           {activeTab === "privacy" && (
             <div className="space-y-4 animate-in fade-in duration-150">
-              <div className="p-3.5 rounded-xl bg-pink-950/20 border border-pink-900/30 flex items-start gap-2.5 sm:gap-3">
-                <ShieldCheck className="w-5 h-5 text-pink-400 shrink-0 mt-0.5" />
-                <p className="text-pink-200/90 text-xs sm:text-sm leading-relaxed">
-                  ReelSnap berkomitmen penuh menjaga privasi dan keamanan digital Anda. Kami tidak memerlukan data login, akun Instagram, atau informasi sensitif apa pun.
+              <div className="p-3.5 rounded-xl bg-pink-50 border-2 border-pink-200 text-pink-900 dark:bg-pink-950/20 dark:border-pink-900/30 dark:text-pink-200 flex items-start gap-2.5 sm:gap-3">
+                <ShieldCheck className="w-5 h-5 text-pink-600 dark:text-pink-400 shrink-0 mt-0.5" />
+                <p className="text-xs sm:text-sm leading-relaxed font-bold">
+                  {isId
+                    ? "ReelSnap menghormati privasi Anda. Layanan ini dapat digunakan secara 100% anonim tanpa registrasi, tanpa login, dan tanpa menyimpan berkas hasil unduhan."
+                    : "ReelSnap values your privacy. Our service is 100% anonymous with no registration, no Instagram login required, and no downloaded media stored on our servers."}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-bold text-white text-sm sm:text-base mb-1">
-                  1. Informasi yang Kami Kumpulkan
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "1. Tidak Ada Pengumpulan Data Pribadi" : "1. Zero Personal Data Collection"}
                 </h4>
-                <p className="text-zinc-400 leading-relaxed">
-                  Kami <strong>tidak pernah meminta atau menyimpan</strong> data kredensial pribadi seperti username, password Instagram, alamat email, atau riwayat unduhan pribadi Anda. Semua proses unduhan berlangsung anonim.
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "ReelSnap tidak pernah meminta atau menyimpan kredensial akun Instagram Anda (seperti username atau kata sandi), alamat IP permanen, nama lengkap, atau alamat email pengguna umum."
+                    : "ReelSnap never requests or retains your personal Instagram credentials (username or password), permanent IP logs, full names, or email addresses for standard downloads."}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-bold text-white text-sm sm:text-base mb-1">
-                  2. Pemrosesan Media Instagram
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "2. Pemrosesan Media Real-Time Tanpa Penyimpanan" : "2. Real-Time Media Streaming (No Storage)"}
                 </h4>
-                <p className="text-zinc-400 leading-relaxed">
-                  Tautan URL Instagram yang Anda inputkan hanya diproses secara real-time oleh server kami untuk mengambil link unduhan publik dari CDN Instagram/Meta. Server ReelSnap <strong>tidak menyimpan file video atau foto Anda secara permanen</strong>.
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "Tautan URL Instagram yang Anda masukkan diproses secara langsung untuk menyalurkan berkas video, foto, atau audio dari CDN resmi Instagram ke peramban Anda. Server ReelSnap tidak menyimpan arsip atau salinan permanen dari konten tersebut."
+                    : "Instagram links you provide are parsed in real time to stream video, photo, or audio content directly from Instagram's official CDN to your browser. ReelSnap servers do not host or archive any user media files."}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-bold text-white text-sm sm:text-base mb-1">
-                  3. Penggunaan Cookie & Pelacakan
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "3. Kebijakan Cookie & Google AdSense" : "3. Cookie Policy & Google AdSense Compliance"}
                 </h4>
-                <p className="text-zinc-400 leading-relaxed">
-                  ReelSnap tidak menggunakan cookie pelacak pribadi yang invasif. Kami hanya dapat menggunakan penyimpanan lokal ringan browser untuk keperluan performa dan fungsionalitas antarmuka.
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "Situs ini dapat menampilkan iklan yang dikelola oleh Google AdSense atau mitra periklanan pihak ketiga. Google menggunakan cookie (seperti cookie DoubleClick DART) untuk menayangkan iklan kepada pengguna berdasarkan kunjungan mereka ke situs ini dan situs web lain di internet."
+                    : "This website may serve advertisements managed by Google AdSense or authorized third-party ad networks. Google uses cookies (including the DoubleClick DART cookie) to serve ads to users based on their prior visits to this website and other sites across the internet."}
+                </p>
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed mt-1.5">
+                  {isId
+                    ? "Pengguna dapat menyetel preferensi atau memilih keluar (opt-out) dari penayangan iklan hasil personalisasi dengan mengunjungi Pengaturan Iklan Google di https://www.google.com/settings/ads atau melalui https://www.aboutads.info."
+                    : "Users may opt out of personalized advertising by visiting Google Ads Settings at https://www.google.com/settings/ads or via https://www.aboutads.info."}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-bold text-white text-sm sm:text-base mb-1">
-                  4. Keamanan Transmisi Data
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "4. Penyimpanan Lokal Peramban (LocalStorage)" : "4. Client-Side Browser Storage (LocalStorage)"}
                 </h4>
-                <p className="text-zinc-400 leading-relaxed">
-                  Seluruh komunikasi data di ReelSnap terlindungi dengan enkripsi SSL/HTTPS tingkat tinggi untuk memastikan keamanan koneksi antara perangkat Anda dan server kami.
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "Fitur 'Riwayat Unduhan Terakhir' dan preferensi bahasa/tema disimpan secara lokal pada peramban perangkat Anda (localStorage) dan tidak pernah dikirimkan ke server kami. Anda dapat menghapus data ini kapan saja melalui tombol 'Hapus Riwayat'."
+                    : "Features such as 'Recent Downloads' and language/theme preferences are kept strictly on your local browser (localStorage) and are never transmitted to our backend. You can clear this data anytime using the 'Clear History' button."}
                 </p>
               </div>
             </div>
           )}
 
-          {/* TAB: KETENTUAN LAYANAN */}
+          {/* TAB: TERMS OF SERVICE */}
           {activeTab === "terms" && (
             <div className="space-y-4 animate-in fade-in duration-150">
-              <div className="p-3.5 rounded-xl bg-purple-950/20 border border-purple-900/30 flex items-start gap-2.5 sm:gap-3">
-                <FileText className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
-                <p className="text-purple-200/90 text-xs sm:text-sm leading-relaxed">
-                  Dengan menggunakan ReelSnap, Anda menyetujui ketentuan pemanfaatan layanan untuk tujuan pribadi yang sah dan menghormati hak cipta kreator.
+              <div className="p-3.5 rounded-xl bg-purple-50 border-2 border-purple-200 text-purple-900 dark:bg-purple-950/20 dark:border-purple-900/30 dark:text-purple-200 flex items-start gap-2.5 sm:gap-3">
+                <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
+                <p className="text-xs sm:text-sm leading-relaxed font-bold">
+                  {isId
+                    ? "Dengan mengakses dan menggunakan ReelSnap, Anda menyetujui Ketentuan Layanan ini untuk penggunaan pribadi yang sah serta menghormati hak cipta kreator asli."
+                    : "By accessing and using ReelSnap, you agree to these Terms of Service for lawful personal use and agree to respect all intellectual property rights of original creators."}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-bold text-white text-sm sm:text-base mb-1">
-                  1. Ruang Lingkup Layanan
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "1. Ruang Lingkup & Tujuan Penggunaan" : "1. Scope & Permitted Use"}
                 </h4>
-                <p className="text-zinc-400 leading-relaxed">
-                  ReelSnap adalah alat bantu gratis berbasis web yang dirancang untuk mempermudah pengunduhan video Reels, video postingan, dan foto dari akun Instagram yang bersifat <strong>publik</strong>.
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "ReelSnap disediakan murni sebagai alat bantu teknis untuk mengunduh konten dari akun Instagram publik untuk keperluan pencadangan pribadi (personal backup), edukasi, atau referensi non-komersial (fair use)."
+                    : "ReelSnap is provided solely as a technical utility to download public Instagram media for personal backup, offline viewing, education, or non-commercial fair use."}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-bold text-white text-sm sm:text-base mb-1">
-                  2. Hak Cipta dan Kepemilikan Konten
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "2. Hak Cipta & Kewajiban Pengguna" : "2. Copyrights & User Obligations"}
                 </h4>
-                <p className="text-zinc-400 leading-relaxed">
-                  Seluruh hak cipta, hak merek dagang, musik latar, serta konten video/gambar tetap merupakan hak milik penuh dari masing-masing kreator konten atau Meta Platforms, Inc. ReelSnap tidak mengklaim kepemilikan apa pun atas konten yang diunduh.
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "Seluruh hak cipta video, audio, foto, dan grafis dimiliki sepenuhnya oleh kreator konten asli. Anda dilarang mendistribusikan ulang, memonetisasi, atau menjual konten unduhan milik pihak ketiga tanpa izin tertulis dari pemilik hak cipta."
+                    : "All video, audio, image, and graphic copyrights belong exclusively to their respective creators. You may not redistribute, commercialize, or monetize third-party media downloaded via ReelSnap without explicit permission from the copyright owner."}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-bold text-white text-sm sm:text-base mb-1">
-                  3. Tanggung Jawab Pengguna
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "3. Batasan Tanggung Jawab" : "3. Disclaimer of Warranties"}
                 </h4>
-                <p className="text-zinc-400 leading-relaxed">
-                  Pengguna bertanggung jawab penuh atas penggunaan konten yang diunduh. Layanan ini hanya boleh digunakan untuk kepentingan pribadi, backup arsip, edukasi, atau referensi non-komersial (fair use). Dilarang keras menyebarluaskan kembali konten milik orang lain untuk tujuan komersial tanpa izin resmi dari pemilik konten.
-                </p>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-white text-sm sm:text-base mb-1">
-                  4. Pernyataan Penafian (Disclaimer)
-                </h4>
-                <p className="text-zinc-400 leading-relaxed">
-                  ReelSnap tidak berafiliasi, didukung, disponsori, atau secara resmi bermitra dengan Instagram, Facebook, atau Meta Platforms, Inc. Nama &quot;Instagram&quot; serta logonya adalah merek dagang terdaftar milik Meta Platforms, Inc.
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "Layanan disediakan 'sebagaimana adanya' (as-is) tanpa garansi ketersediaan tanpa gangguan. ReelSnap tidak bertanggung jawab atas kerugian atau pelanggaran hukum yang diakibatkan oleh penyalahgunaan layanan oleh pengguna."
+                    : "The service is provided 'as is' without warranties of any kind. ReelSnap shall not be liable for any damages or legal violations resulting from unauthorized use by users."}
                 </p>
               </div>
             </div>
           )}
 
-          {/* TAB: BANTUAN */}
-          {activeTab === "help" && (
+          {/* TAB: DMCA & COPYRIGHT */}
+          {activeTab === "dmca" && (
             <div className="space-y-4 animate-in fade-in duration-150">
-              <div className="p-3.5 rounded-xl bg-amber-950/20 border border-amber-900/30 flex items-start gap-2.5 sm:gap-3">
-                <HelpCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                <p className="text-amber-200/90 text-xs sm:text-sm leading-relaxed">
-                  Ikuti panduan ringkas berikut untuk mengunduh video Reels atau postingan Instagram dengan mudah.
+              <div className="p-3.5 rounded-xl bg-rose-50 border-2 border-rose-200 text-rose-900 dark:bg-rose-950/20 dark:border-rose-900/30 dark:text-rose-200 flex items-start gap-2.5 sm:gap-3">
+                <Scale className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+                <p className="text-xs sm:text-sm leading-relaxed font-bold">
+                  {isId
+                    ? "ReelSnap sangat menghargai hak kekayaan intelektual orang lain dan mematuhi Digital Millennium Copyright Act (DMCA) serta peraturan hak cipta yang berlaku."
+                    : "ReelSnap strongly respects intellectual property rights and complies with the Digital Millennium Copyright Act (DMCA) and international copyright laws."}
                 </p>
               </div>
 
-              <div className="space-y-2.5 sm:space-y-3">
-                <h4 className="font-bold text-white text-sm sm:text-base">
-                  Cara Download Video Instagram:
+              <div>
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "Penafian Merek Dagang" : "Trademark Non-Affiliation Disclaimer"}
                 </h4>
-
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
-                  <div className="w-6 h-6 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                    1
-                  </div>
-                  <div>
-                    <strong className="text-white block mb-0.5 text-xs sm:text-sm">Salin Tautan Video</strong>
-                    <span className="text-zinc-400 text-xs leading-relaxed">
-                      Buka aplikasi Instagram, pilih Reels/video yang ingin diunduh, ketuk tombol <strong>Bagikan (Share)</strong>, lalu pilih <strong>Salin Tautan (Copy Link)</strong>.
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
-                  <div className="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                    2
-                  </div>
-                  <div>
-                    <strong className="text-white block mb-0.5 text-xs sm:text-sm">Tempelkan di ReelSnap</strong>
-                    <span className="text-zinc-400 text-xs leading-relaxed">
-                      Kembali ke ReelSnap, klik tombol <strong>Tempel</strong> pada formulir input di atas, lalu tekan tombol <strong>Download</strong>.
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/80">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                    3
-                  </div>
-                  <div>
-                    <strong className="text-white block mb-0.5 text-xs sm:text-sm">Simpan Video HD</strong>
-                    <span className="text-zinc-400 text-xs leading-relaxed">
-                      Setelah preview muncul, klik tombol <strong>Download Video HD (.MP4)</strong> untuk menyimpan langsung file ke galeri Anda.
-                    </span>
-                  </div>
-                </div>
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "ReelSnap adalah situs web independen dan TIDAK berafiliasi, didukung, disponsori, atau secara resmi terhubung dengan Instagram, Meta Platforms, Inc., atau entitas terkait lainnya. Nama 'Instagram' beserta logo kameranya adalah merek dagang terdaftar milik Meta Platforms, Inc."
+                    : "ReelSnap is an independent tool and is NOT affiliated, associated, authorized, endorsed by, or in any way officially connected with Instagram, Meta Platforms, Inc., or any of its subsidiaries. The name 'Instagram' and related marks are registered trademarks of Meta Platforms, Inc."}
+                </p>
               </div>
 
-              <div className="pt-2 border-t border-zinc-800/80">
-                <h4 className="font-bold text-white text-xs sm:text-sm mb-2 flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-400" />
-                  Kendala Umum (Troubleshooting)
+              <div>
+                <h4 className="font-black text-slate-950 dark:text-white text-sm sm:text-base mb-1">
+                  {isId ? "Prosedur Pengajuan DMCA Takedown" : "DMCA Notice & Takedown Procedure"}
                 </h4>
-                <ul className="text-zinc-400 text-xs space-y-1.5 list-disc list-inside leading-relaxed">
+                <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
+                  {isId
+                    ? "Jika Anda adalah pemilik hak cipta yang sah dan meyakini bahwa konten Anda disalahgunakan atau ingin memblokir tautan konten Anda agar tidak dapat diproses oleh sistem ReelSnap, silakan kirimkan pemberitahuan resmi yang memuat:"
+                    : "If you are a copyright owner and believe your copyrighted work is being infringed or wish to restrict your Instagram URLs from being processed through ReelSnap, please submit an official notice containing:"}
+                </p>
+                <ul className="list-disc list-inside space-y-1 text-slate-700 dark:text-zinc-300 font-semibold text-xs mt-2 pl-1">
                   <li>
-                    <strong>Akun Private:</strong> Video dari akun private Instagram tidak dapat diunduh demi melindungi privasi pemilik akun.
+                    {isId
+                      ? "Identifikasi karya berhak cipta dan URL postingan Instagram spesifik."
+                      : "Identification of the copyrighted material and specific Instagram post URLs."}
                   </li>
                   <li>
-                    <strong>Tautan Kadaluarsa:</strong> Pastikan tautan berasal dari postingan yang masih aktif (bukan Story 24 jam yang sudah hilang).
+                    {isId
+                      ? "Bukti kepemilikan hak cipta atau surat kuasa resmi perwakilan."
+                      : "Proof of copyright ownership or legal representation authorization."}
                   </li>
                   <li>
-                    <strong>Browser iPhone/Safari:</strong> Jika video terbuka langsung di tab baru bukannya terunduh, tahan tombol video lalu pilih &quot;Save Video&quot;.
+                    {isId
+                      ? "Informasi kontak (nama lengkap, alamat email, dan nomor telepon)."
+                      : "Contact information including your full name, email address, and phone number."}
+                  </li>
+                  <li>
+                    {isId
+                      ? "Pernyataan iktikad baik bahwa penggunaan konten tersebut tidak diizinkan."
+                      : "A good faith statement affirming that the disputed use is not authorized."}
                   </li>
                 </ul>
               </div>
 
+              <div className="p-3.5 rounded-xl bg-slate-50 border-2 border-slate-200 dark:bg-zinc-950/70 dark:border-zinc-800 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <Mail className="w-4 h-4 text-pink-600 dark:text-pink-400 shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-950 dark:text-white">Email DMCA / Hak Cipta:</p>
+                    <p className="text-xs text-pink-600 dark:text-pink-400 font-mono font-bold">dmca@reelsnap.app</p>
+                  </div>
+                </div>
+                <span className="text-[10px] text-slate-700 dark:text-zinc-400 uppercase font-black">Respon 24-48 Jam</span>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: HELP & CONTACT */}
+          {activeTab === "help" && (
+            <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-900 dark:bg-amber-950/20 dark:border-amber-900/30 dark:text-amber-200 flex items-start gap-2.5 sm:gap-3">
+                <HelpCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                <p className="text-xs sm:text-sm leading-relaxed font-bold">
+                  {isId
+                    ? "Butuh bantuan saat mengunduh? Temukan solusi atas masalah teknis umum atau hubungi tim pengembang ReelSnap."
+                    : "Need help downloading? Find quick fixes for common technical issues or contact the ReelSnap support team."}
+                </p>
+              </div>
+
+              <div className="space-y-2.5">
+                <h4 className="font-black text-slate-950 dark:text-white text-xs sm:text-sm flex items-center gap-1.5">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  {isId ? "Kendala Umum & Solusi Cepat:" : "Common Issues & Troubleshooting:"}
+                </h4>
+
+                <div className="space-y-2">
+                  <div className="p-3 rounded-xl bg-slate-50 border-2 border-slate-200 dark:bg-zinc-950/60 dark:border-zinc-800/80">
+                    <p className="font-black text-slate-950 dark:text-white text-xs mb-1">
+                      {isId ? "1. Tautan Akun Privat / Terkunci" : "1. Private Instagram Accounts"}
+                    </p>
+                    <p className="text-slate-700 dark:text-zinc-300 font-semibold text-xs leading-relaxed">
+                      {isId
+                        ? "ReelSnap hanya dapat mengunduh video dan foto dari akun publik. Video dari akun yang dikunci (privat) tidak dapat diakses."
+                        : "ReelSnap only extracts media from public Instagram accounts. Private posts cannot be processed to protect account owner privacy."}
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-slate-50 border-2 border-slate-200 dark:bg-zinc-950/60 dark:border-zinc-800/80">
+                    <p className="font-black text-slate-950 dark:text-white text-xs mb-1">
+                      {isId ? "2. Mengapa Video Terbuka di Tab Baru di iPhone / Safari?" : "2. Video Opens in New Tab on iPhone / Safari"}
+                    </p>
+                    <p className="text-slate-700 dark:text-zinc-300 font-semibold text-xs leading-relaxed">
+                      {isId
+                        ? "Pada iOS Safari, jika video diputar alih-alih langsung terunduh, tahan tombol video lalu ketuk 'Simpan Video' atau gunakan ikon Bagikan lalu 'Simpan ke File'."
+                        : "On iOS Safari, if the video plays directly in a new tab instead of downloading, long-press the video and tap 'Save Video' or use the Share icon -> 'Save to Files'."}
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-slate-50 border-2 border-slate-200 dark:bg-zinc-950/60 dark:border-zinc-800/80">
+                    <p className="font-black text-slate-950 dark:text-white text-xs mb-1">
+                      {isId ? "3. Format Audio MP3 192 kbps" : "3. 192 kbps MP3 Audio Extraction"}
+                    </p>
+                    <p className="text-slate-700 dark:text-zinc-300 font-semibold text-xs leading-relaxed">
+                      {isId
+                        ? "Fitur 'Unduh Audio (.MP3)' mengekstrak lagu atau latar suara video secara jernih dan otomatis mengonversinya ke format MP3 192 kbps."
+                        : "The 'Download Audio (.MP3)' button extracts background music and audio tracks with high fidelity 192 kbps MP3 encoding."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-50 border-2 border-slate-200 dark:bg-zinc-950/70 dark:border-zinc-800 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <Mail className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-950 dark:text-white">{isId ? "Kontak Dukungan Pengguna:" : "Support & Inquiries:"}</p>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold">support@reelsnap.app</p>
+                  </div>
+                </div>
+                <a
+                  href="mailto:support@reelsnap.app"
+                  className="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-900 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white text-xs font-bold flex items-center gap-1 transition-colors"
+                >
+                  <span>{isId ? "Kirim Email" : "Email Us"}</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
               {onScrollToFaq && (
-                <div className="pt-2">
+                <div className="pt-1">
                   <button
                     onClick={() => {
                       onClose();
                       onScrollToFaq();
                     }}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-xs sm:text-sm transition-all cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-950 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white font-bold text-xs sm:text-sm transition-all cursor-pointer border-2 border-slate-300 dark:border-transparent"
                   >
-                    <span>Buka Pertanyaan yang Sering Diajukan (FAQ)</span>
-                    <ArrowRight className="w-4 h-4 text-pink-400" />
+                    <span>{isId ? "Lihat Pertanyaan yang Sering Diajukan (FAQ)" : "View Frequently Asked Questions (FAQ)"}</span>
+                    <ArrowRight className="w-4 h-4 text-pink-600 dark:text-pink-400" />
                   </button>
                 </div>
               )}
@@ -305,13 +413,13 @@ export default function InfoModal({
         </div>
 
         {/* Footer */}
-        <div className="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-zinc-800/80 bg-zinc-950/70 flex items-center justify-between text-xs text-zinc-500">
-          <span className="text-[11px] sm:text-xs">&copy; 2026 ReelSnap</span>
+        <div className="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-zinc-950/70 flex items-center justify-between text-xs text-slate-600 dark:text-zinc-500">
+          <span className="text-[11px] sm:text-xs">&copy; 2026 ReelSnap. {isId ? "Hak Cipta Dilindungi." : "All Rights Reserved."}</span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 sm:py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-xs sm:text-sm transition-colors cursor-pointer"
+            className="px-4 py-1.5 sm:py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-900 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white font-medium text-xs sm:text-sm transition-colors cursor-pointer"
           >
-            Tutup
+            {isId ? "Tutup" : "Close"}
           </button>
         </div>
       </div>

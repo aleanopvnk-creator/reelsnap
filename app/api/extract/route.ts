@@ -43,15 +43,80 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Perform Dual-Layer Extraction
-    const media = await extractInstagramMedia(url);
+    // 3. Strict SSRF Protection & Domain Whitelist Validation
+    let parsedUrl: URL;
+    try {
+      const normalizedUrl = url.trim().startsWith("http://") || url.trim().startsWith("https://")
+        ? url.trim()
+        : `https://${url.trim()}`;
+      parsedUrl = new URL(normalizedUrl);
+    } catch {
+      return NextResponse.json(
+        { success: false, error: "Format tautan tidak valid." },
+        { status: 400, headers }
+      );
+    }
+
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+      return NextResponse.json(
+        { success: false, error: "Protokol tautan tidak diizinkan. Hanya menerima HTTP/HTTPS." },
+        { status: 400, headers }
+      );
+    }
+
+    const host = parsedUrl.hostname.toLowerCase();
+
+    // Prevent SSRF: block local loopback, link-local, and private network IPs
+    const isPrivateOrLocal =
+      host === "localhost" ||
+      host === "127.0.0.1" ||
+      host === "0.0.0.0" ||
+      host === "::1" ||
+      host === "[::1]" ||
+      host.startsWith("10.") ||
+      host.startsWith("192.168.") ||
+      host.startsWith("169.254.") ||
+      /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(host) ||
+      host.endsWith(".internal") ||
+      host.endsWith(".local") ||
+      host.endsWith(".onion");
+
+    if (isPrivateOrLocal) {
+      return NextResponse.json(
+        { success: false, error: "Akses ke jaringan lokal/privat diblokir oleh sistem keamanan SSRF ReelSnap." },
+        { status: 403, headers }
+      );
+    }
+
+    const allowedInstagramHosts = [
+      "instagram.com",
+      "www.instagram.com",
+      "m.instagram.com",
+      "instagr.am",
+    ];
+
+    if (!allowedInstagramHosts.includes(host)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Domain URL tidak diizinkan. ReelSnap hanya memproses tautan resmi instagram.com atau instagr.am.",
+        },
+        { status: 400, headers }
+      );
+    }
+
+    // 4. Perform Multi-Layer Extraction
+    const media = await extractInstagramMedia(parsedUrl.toString());
 
     return NextResponse.json(
       {
         success: true,
         shortcode: media.shortcode,
+        mediaType: media.mediaType,
         videoUrl: media.videoUrl,
-        audioUrl: media.audioUrl || media.videoUrl,
+        audioUrl: media.audioUrl || (media.mediaType === "video" ? media.videoUrl : undefined),
+        imageUrl: media.imageUrl,
+        items: media.items || [],
         thumbnailUrl: media.thumbnailUrl,
         caption: media.caption,
         author: media.author,

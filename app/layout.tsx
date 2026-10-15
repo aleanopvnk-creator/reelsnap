@@ -9,15 +9,18 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://reelsnap.app"),
-  title: "ReelSnap - Unduh Video Instagram Reels, Post HD Tanpa Watermark",
+  title: "ReelSnap - Download Reels & Foto Instagram HD Tanpa Watermark",
   description:
-    "ReelSnap adalah aplikasi pengunduh video Instagram Reels Dan Post kualitas HD (1080p) gratis tanpa watermark. Cepat, aman, tanpa aplikasi tambahan, kompatibel dengan Android, iPhone (iOS), dan PC.",
+    "ReelSnap adalah situs download video Instagram Reels dan foto postingan kualitas Full HD (1080p) gratis tanpa watermark. Cepat, aman, tanpa aplikasi tambahan untuk Android, iPhone (iOS), dan PC.",
   keywords: [
     "ReelSnap",
+    "Download Reels IG",
+    "Download Foto Instagram HD",
     "Instagram Reels Downloader",
+    "Download Postingan IG Tanpa Watermark",
     "Download Video Instagram",
     "Unduh Reels IG Tanpa Watermark",
-    "Instagram Video Downloader HD",
+    "Instagram Photo Downloader HD",
     "Cara Download Reels IG",
   ],
   authors: [{ name: "ReelSnap" }],
@@ -28,6 +31,7 @@ export const metadata: Metadata = {
     shortcut: "/icon.png",
     apple: "/apple-icon.png",
   },
+  manifest: "/manifest.webmanifest",
   robots: {
     index: true,
     follow: true,
@@ -44,15 +48,15 @@ export const metadata: Metadata = {
     locale: "id_ID",
     url: "/",
     siteName: "ReelSnap",
-    title: "ReelSnap - Unduh Video Instagram Reels & Post HD Tanpa Watermark",
+    title: "ReelSnap - Download Reels & Foto Instagram HD Tanpa Watermark",
     description:
-      "Download video Instagram Reels & Post kualitas 1080p tanpa watermark secara instan dan gratis dengan ReelSnap.",
+      "Download video Instagram Reels & Foto postingan kualitas Full HD tanpa watermark secara instan dan gratis dengan ReelSnap.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ReelSnap - Unduh Video Instagram Reels & Post HD Tanpa Watermark",
+    title: "ReelSnap - Download Reels & Foto Instagram HD Tanpa Watermark",
     description:
-      "Download video Instagram Reels & Post kualitas 1080p tanpa watermark secara instan dan gratis dengan ReelSnap.",
+      "Download video Instagram Reels & Foto postingan kualitas Full HD tanpa watermark secara instan dan gratis dengan ReelSnap.",
   },
 };
 
@@ -71,17 +75,17 @@ const jsonLdSchema = {
         priceCurrency: "USD",
       },
       description:
-        "ReelSnap adalah aplikasi web pengunduh video Instagram Reels dan Post kualitas tinggi tanpa watermark secara cepat dan gratis.",
+        "ReelSnap adalah situs web pengunduh video Instagram Reels dan Foto postingan kualitas tinggi tanpa watermark secara cepat dan gratis.",
     },
     {
       "@type": "HowTo",
-      name: "Cara Mengunduh Video Reels Instagram dengan ReelSnap",
-      description: "Panduan 3 langkah mudah mengunduh video Instagram Reels dalam kualitas Full HD menggunakan ReelSnap.",
+      name: "Cara Download Video Reels & Foto Instagram dengan ReelSnap",
+      description: "Panduan 3 langkah mudah download video Instagram Reels dan foto postingan Full HD tanpa watermark menggunakan ReelSnap.",
       step: [
         {
           "@type": "HowToStep",
           name: "Langkah 1: Salin Tautan (Copy Link)",
-          text: "Buka aplikasi Instagram, pilih video Reels yang ingin diunduh, klik ikon Bagikan (Pesawat Kertas) lalu pilih 'Salin Tautan'.",
+          text: "Buka aplikasi Instagram, pilih video Reels atau foto postingan yang ingin diunduh, klik ikon Bagikan lalu pilih 'Salin Tautan'.",
           position: 1,
         },
         {
@@ -92,8 +96,8 @@ const jsonLdSchema = {
         },
         {
           "@type": "HowToStep",
-          name: "Langkah 3: Unduh Video HD",
-          text: "Klik tombol 'Download', pratinjau video akan muncul. Klik tombol 'Download Video HD (.MP4)' untuk menyimpan video ke perangkat Anda.",
+          name: "Langkah 3: Download Media HD",
+          text: "Klik tombol 'Download', pratinjau media akan muncul. Klik tombol 'Download Video HD' atau 'Download Foto HD' untuk menyimpan file ke perangkat Anda.",
           position: 3,
         },
       ],
@@ -107,17 +111,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className="dark">
+    <html lang="id" className="dark" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/icon.png?v=4" type="image/png" sizes="any" />
         <link rel="shortcut icon" href="/favicon.ico?v=4" />
         <link rel="apple-touch-icon" href="/apple-icon.png?v=4" />
         <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var saved = localStorage.getItem('reelsnap_theme');
+                if (saved === 'light') {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.classList.add('light');
+                  document.documentElement.setAttribute('data-theme', 'light');
+                } else {
+                  document.documentElement.classList.remove('light');
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.setAttribute('data-theme', 'dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 antialiased selection:bg-pink-500 selection:text-white">
+      <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-pink-500 selection:text-white">
         {children}
       </body>
     </html>

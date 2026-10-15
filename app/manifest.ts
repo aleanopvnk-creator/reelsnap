@@ -1,0 +1,37 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "ReelSnap - Download Video Instagram Tanpa Watermark",
+    short_name: "ReelSnap",
+    description:
+      "Unduh Video Instagram Reels, Video Feed & Audio MP3 Gratis Cepat Tanpa Watermark.",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#09090b",
+    theme_color: "#e1306c",
+    orientation: "portrait",
+    scope: "/",
+    lang: "id",
+    categories: ["utilities", "productivity", "social"],
+    icons: [
+      {
+        src: "/icon.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icon.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/apple-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  };
+}
