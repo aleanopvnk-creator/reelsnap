@@ -6,12 +6,12 @@
   --background: #09090b;
   --foreground: #f4f4f5;
   --color-zinc-950: #09090b;
-  --color-zinc-900: #18181b;
-  --color-zinc-800: #27272a;
-  --color-zinc-700: #3f3f46;
+  --color-zinc-900: #141417;
+  --color-zinc-800: #202024;
+  --color-zinc-700: #333338;
   --color-zinc-600: #52525c;
   --color-zinc-500: #71717b;
-  --color-zinc-400: #9f9fa9;
+  --color-zinc-400: #a1a1aa;
   --color-zinc-300: #d4d4d8;
   --color-zinc-200: #e4e4e7;
   --color-zinc-100: #f4f4f5;
@@ -22,16 +22,6 @@ html.dark,
 .dark {
   --background: #09090b;
   --foreground: #f4f4f5;
-  --color-zinc-950: #09090b;
-  --color-zinc-900: #18181b;
-  --color-zinc-800: #27272a;
-  --color-zinc-700: #3f3f46;
-  --color-zinc-600: #52525c;
-  --color-zinc-500: #71717b;
-  --color-zinc-400: #9f9fa9;
-  --color-zinc-300: #d4d4d8;
-  --color-zinc-200: #e4e4e7;
-  --color-zinc-100: #f4f4f5;
   color-scheme: dark;
 }
 
@@ -40,16 +30,6 @@ html.light,
 .light {
   --background: #f8fafc;
   --foreground: #0f172a;
-  --color-zinc-950: #f8fafc;
-  --color-zinc-900: #ffffff;
-  --color-zinc-800: #e2e8f0;
-  --color-zinc-700: #cbd5e1;
-  --color-zinc-600: #94a3b8;
-  --color-zinc-500: #64748b;
-  --color-zinc-400: #334155;
-  --color-zinc-300: #1e293b;
-  --color-zinc-200: #0f172a;
-  --color-zinc-100: #09090b;
   color-scheme: light;
 }
 
@@ -67,32 +47,26 @@ body {
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Instagram Signature Gradient Background */
+/* Instagram Signature Gradient (Subtle & refined, not overly neon) */
 .bg-ig-gradient {
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 }
 
 .bg-ig-gradient-hover:hover {
-  background: linear-gradient(45deg, #e68525 0%, #db592e 25%, #cb1c37 50%, #b81757 75%, #a80f78 100%);
+  filter: brightness(1.06);
 }
 
 /* Instagram Gradient Text */
 .text-ig-gradient {
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Glassmorphism Card Style */
-.glass-panel {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-/* Custom Scrollbar */
+/* Custom Scrollbar - Minimal & Discrete */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -101,234 +75,38 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(160, 160, 160, 0.25);
+  background: rgba(140, 140, 140, 0.25);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(160, 160, 160, 0.45);
+  background: rgba(140, 140, 140, 0.45);
 }
 
-/* Subtle modal scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(24, 24, 27, 0.5);
+  background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(236, 72, 153, 0.35);
+  background: rgba(140, 140, 140, 0.3);
   border-radius: 9999px;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 72, 153, 0.6);
-}
 
 /* =========================================================
-   LIGHT MODE: ULTRA HIGH CONTRAST & BOLD TYPOGRAPHY
+   LIGHT MODE CLEAN ADAPTATION
    ========================================================= */
-:is(html.light, [data-theme="light"], .light) {
-  --background: #f8fafc;
-  --foreground: #09090b;
-}
-
 :is(html.light, [data-theme="light"], .light) body {
-  background-color: #f8fafc !important;
-  color: #09090b !important;
-  font-weight: 500;
+  background-color: #f8fafc;
+  color: #0f172a;
 }
 
-/* Force all headings in light mode to be solid black/slate, never faint or white */
-:is(html.light, [data-theme="light"], .light) h1,
-:is(html.light, [data-theme="light"], .light) h2,
-:is(html.light, [data-theme="light"], .light) h3,
-:is(html.light, [data-theme="light"], .light) h4,
-:is(html.light, [data-theme="light"], .light) h5,
-:is(html.light, [data-theme="light"], .light) h6 {
-  color: #09090b !important;
-  font-weight: 800 !important;
-}
-
-/* Fix for header brand logo "Reel" text */
-:is(html.light, [data-theme="light"], .light) header span.text-slate-900,
-:is(html.light, [data-theme="light"], .light) header span.font-extrabold,
-:is(html.light, [data-theme="light"], .light) header span.font-black,
-:is(html.light, [data-theme="light"], .light) header span.text-white {
-  color: #09090b !important;
-  font-weight: 900 !important;
-}
-
-/* Universal Backgrounds in Light Mode */
-:is(html.light, [data-theme="light"], .light) [class*="bg-zinc-950"] {
-  background-color: #f8fafc !important;
-}
-
-:is(html.light, [data-theme="light"], .light) [class*="bg-zinc-900"] {
-  background-color: #ffffff !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
-}
-
-:is(html.light, [data-theme="light"], .light) [class*="bg-zinc-800"] {
-  background-color: #f1f5f9 !important;
-}
-
-/* Universal Borders in Light Mode */
-:is(html.light, [data-theme="light"], .light) [class*="border-zinc-800"],
-:is(html.light, [data-theme="light"], .light) [class*="border-zinc-700"] {
-  border-color: #cbd5e1 !important;
-}
-
-/* Universal High-Contrast Body & Description Text in Light Mode */
-:is(html.light, [data-theme="light"], .light) .text-zinc-100 {
-  color: #09090b !important;
-  font-weight: 700 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) .text-zinc-200,
-:is(html.light, [data-theme="light"], .light) .text-zinc-300 {
-  color: #1e293b !important;
-  font-weight: 600 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) .text-zinc-400 {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) .text-zinc-500 {
-  color: #475569 !important;
-  font-weight: 600 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) .text-slate-600 {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-
-/* Hero Tag Badge in Light Mode */
-:is(html.light, [data-theme="light"], .light) .text-pink-200 {
-  color: #9d174d !important;
-  font-weight: 800 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) div[class*="from-pink-500/15"][class*="rounded-full"] {
-  background: #fdf2f8 !important;
-  border-color: #f472b6 !important;
-  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.18) !important;
-}
-
-/* HowTo Cards in Light Mode */
-:is(html.light, [data-theme="light"], .light) section div[class*="grid-cols-1 md:grid-cols-3"] > div {
-  background-color: #ffffff !important;
-  border: 2px solid #cbd5e1 !important;
-  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.08) !important;
-}
-
-:is(html.light, [data-theme="light"], .light) section div[class*="grid-cols-1 md:grid-cols-3"] > div h3 {
-  color: #09090b !important;
-  font-weight: 900 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) section div[class*="grid-cols-1 md:grid-cols-3"] > div p {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-
-/* Features Grid Cards in Light Mode */
-:is(html.light, [data-theme="light"], .light) section div[class*="grid-cols-1 sm:grid-cols-2 md:grid-cols-3"] > div {
-  background-color: #ffffff !important;
-  border: 2px solid #cbd5e1 !important;
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.06) !important;
-}
-
-:is(html.light, [data-theme="light"], .light) section div[class*="grid-cols-1 sm:grid-cols-2 md:grid-cols-3"] > div h3 {
-  color: #09090b !important;
-  font-weight: 900 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) section div[class*="grid-cols-1 sm:grid-cols-2 md:grid-cols-3"] > div p {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-
-/* Header in Light Mode */
 :is(html.light, [data-theme="light"], .light) header {
-  background-color: rgba(255, 255, 255, 0.98) !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+  background-color: rgba(255, 255, 255, 0.92);
+  border-color: #e2e8f0;
 }
 
-/* Footer in Light Mode */
 :is(html.light, [data-theme="light"], .light) footer {
-  background-color: #f1f5f9 !important;
-  border-color: #cbd5e1 !important;
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
 }
-
-:is(html.light, [data-theme="light"], .light) footer span.font-bold,
-:is(html.light, [data-theme="light"], .light) footer span.text-slate-900,
-:is(html.light, [data-theme="light"], .light) footer span.text-white {
-  color: #09090b !important;
-  font-weight: 900 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) footer p {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) footer button,
-:is(html.light, [data-theme="light"], .light) footer a {
-  color: #1e293b !important;
-  font-weight: 700 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) footer button:hover,
-:is(html.light, [data-theme="light"], .light) footer a:hover {
-  color: #be185d !important;
-}
-
-/* Form & Input in Light Mode */
-:is(html.light, [data-theme="light"], .light) input#instagram-url-input {
-  color: #09090b !important;
-  font-weight: 700 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) input#instagram-url-input::placeholder {
-  color: #64748b !important;
-  font-weight: 600 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) div[class*="bg-zinc-950/80"][class*="rounded-xl"] {
-  background-color: #f1f5f9 !important;
-  border-color: #cbd5e1 !important;
-}
-
-/* Secondary Buttons in Light Mode */
-:is(html.light, [data-theme="light"], .light) button[class*="bg-zinc-800/70"],
-:is(html.light, [data-theme="light"], .light) button[class*="bg-zinc-800"] {
-  background-color: #f1f5f9 !important;
-  border-color: #cbd5e1 !important;
-  color: #09090b !important;
-  font-weight: 700 !important;
-}
-
-:is(html.light, [data-theme="light"], .light) .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.8);
-}
-
-/* =========================================================
-   DARK MODE: CRISP CONTRAST & BOLD TYPOGRAPHY
-   ========================================================= */
-:is(html.dark, [data-theme="dark"], .dark) h1,
-:is(html.dark, [data-theme="dark"], .dark) h2,
-:is(html.dark, [data-theme="dark"], .dark) h3,
-:is(html.dark, [data-theme="dark"], .dark) h4,
-:is(html.dark, [data-theme="dark"], .dark) h5,
-:is(html.dark, [data-theme="dark"], .dark) h6 {
-  color: #ffffff;
-  font-weight: 800;
-}
-
-:is(html.dark, [data-theme="dark"], .dark) p {
-  font-weight: 500;
-}
-

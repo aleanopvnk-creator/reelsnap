@@ -1,5 +1,5 @@
 /**
- * ReelSnap - Instagram Video, Audio & Photo Extraction Engine
+ * SatsetReels - Instagram Video, Audio & Photo Extraction Engine
  * Multi-Layer Architecture:
  * 1. Meta Crawler SSR Scraper (Extracts progressive HD video versions or original full HD photos via official crawler preview)
  * 2. Native GraphQL Scraper (doc_id: 9510064595728286 / 8845758582119845 / 7148703928507858)
@@ -1028,6 +1028,6 @@ export async function extractInstagramMedia(rawUrl: string): Promise<InstagramMe
   }
 
   throw new Error(
-    "Tidak dapat menemukan media dari tautan tersebut. ReelSnap mendukung pengunduhan Video Reels, Feed Video, serta Postingan Foto HD Instagram. Pastikan tautan berasal dari postingan publik yang masih aktif."
+    "Tidak dapat menemukan media dari tautan tersebut. SatsetReels mendukung pengunduhan Video Reels, Feed Video, serta Postingan Foto HD Instagram. Pastikan tautan berasal dari postingan publik yang masih aktif."
   );
 }

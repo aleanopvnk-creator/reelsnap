@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     if (isPrivateOrLocal) {
       return NextResponse.json(
-        { success: false, error: "Akses ke jaringan lokal/privat diblokir oleh sistem keamanan SSRF ReelSnap." },
+        { success: false, error: "Akses ke jaringan lokal/privat diblokir oleh sistem keamanan SSRF SatsetReels." },
         { status: 403, headers }
       );
     }
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "Domain URL tidak diizinkan. ReelSnap hanya memproses tautan resmi instagram.com atau instagr.am.",
+          error: "Domain URL tidak diizinkan. SatsetReels hanya memproses tautan resmi instagram.com atau instagr.am.",
         },
         { status: 400, headers }
       );

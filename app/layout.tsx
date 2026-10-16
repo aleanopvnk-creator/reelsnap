@@ -8,12 +8,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://reelsnap.app"),
-  title: "ReelSnap - Download Reels & Foto Instagram HD Tanpa Watermark",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://satsetreels.app"),
+  title: "SatsetReels - Download Reels & Foto Instagram HD Tanpa Watermark",
   description:
-    "ReelSnap adalah situs download video Instagram Reels dan foto postingan kualitas Full HD (1080p) gratis tanpa watermark. Cepat, aman, tanpa aplikasi tambahan untuk Android, iPhone (iOS), dan PC.",
+    "SatsetReels adalah situs download video Instagram Reels dan foto postingan kualitas Full HD (1080p) gratis tanpa watermark. Cepat, aman, tanpa aplikasi tambahan untuk Android, iPhone (iOS), dan PC.",
   keywords: [
-    "ReelSnap",
+    "SatsetReels",
     "Download Reels IG",
     "Download Foto Instagram HD",
     "Instagram Reels Downloader",
@@ -23,9 +23,9 @@ export const metadata: Metadata = {
     "Instagram Photo Downloader HD",
     "Cara Download Reels IG",
   ],
-  authors: [{ name: "ReelSnap" }],
-  creator: "ReelSnap",
-  publisher: "ReelSnap",
+  authors: [{ name: "SatsetReels" }],
+  creator: "SatsetReels",
+  publisher: "SatsetReels",
   icons: {
     icon: "/icon.png",
     shortcut: "/icon.png",
@@ -47,16 +47,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "id_ID",
     url: "/",
-    siteName: "ReelSnap",
-    title: "ReelSnap - Download Reels & Foto Instagram HD Tanpa Watermark",
+    siteName: "SatsetReels",
+    title: "SatsetReels - Download Reels & Foto Instagram HD Tanpa Watermark",
     description:
-      "Download video Instagram Reels & Foto postingan kualitas Full HD tanpa watermark secara instan dan gratis dengan ReelSnap.",
+      "Download video Instagram Reels & Foto postingan kualitas Full HD tanpa watermark secara instan dan gratis dengan SatsetReels.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ReelSnap - Download Reels & Foto Instagram HD Tanpa Watermark",
+    title: "SatsetReels - Download Reels & Foto Instagram HD Tanpa Watermark",
     description:
-      "Download video Instagram Reels & Foto postingan kualitas Full HD tanpa watermark secara instan dan gratis dengan ReelSnap.",
+      "Download video Instagram Reels & Foto postingan kualitas Full HD tanpa watermark secara instan dan gratis dengan SatsetReels.",
   },
 };
 
@@ -65,8 +65,8 @@ const jsonLdSchema = {
   "@graph": [
     {
       "@type": "WebApplication",
-      name: "ReelSnap",
-      url: "https://reelsnap.app",
+      name: "SatsetReels",
+      url: "https://satsetreels.app",
       applicationCategory: "MultimediaApplication",
       operatingSystem: "All (Android, iOS, Windows, macOS, Linux)",
       offers: {
@@ -75,12 +75,12 @@ const jsonLdSchema = {
         priceCurrency: "USD",
       },
       description:
-        "ReelSnap adalah situs web pengunduh video Instagram Reels dan Foto postingan kualitas tinggi tanpa watermark secara cepat dan gratis.",
+        "SatsetReels adalah situs web pengunduh video Instagram Reels dan Foto postingan kualitas tinggi tanpa watermark secara cepat dan gratis.",
     },
     {
       "@type": "HowTo",
-      name: "Cara Download Video Reels & Foto Instagram dengan ReelSnap",
-      description: "Panduan 3 langkah mudah download video Instagram Reels dan foto postingan Full HD tanpa watermark menggunakan ReelSnap.",
+      name: "Cara Download Video Reels & Foto Instagram dengan SatsetReels",
+      description: "Panduan 3 langkah mudah download video Instagram Reels dan foto postingan Full HD tanpa watermark menggunakan SatsetReels.",
       step: [
         {
           "@type": "HowToStep",
@@ -90,8 +90,8 @@ const jsonLdSchema = {
         },
         {
           "@type": "HowToStep",
-          name: "Langkah 2: Tempelkan Tautan di ReelSnap",
-          text: "Buka situs ReelSnap, tempelkan link Instagram ke dalam kolom input yang tersedia dengan menekan tombol 'Tempel'.",
+          name: "Langkah 2: Tempelkan Tautan di SatsetReels",
+          text: "Buka situs SatsetReels, tempelkan link Instagram ke dalam kolom input yang tersedia dengan menekan tombol 'Tempel'.",
           position: 2,
         },
         {
@@ -120,7 +120,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                var saved = localStorage.getItem('reelsnap_theme');
+                var saved = localStorage.getItem('satsetreels_theme') || localStorage.getItem('reelsnap_theme');
                 if (saved === 'light') {
                   document.documentElement.classList.remove('dark');
                   document.documentElement.classList.add('light');

@@ -20,6 +20,16 @@ export interface TranslationDictionary {
       audio: string;
       photo: string;
     };
+    mismatch: {
+      title: string;
+      photoForReels: string;
+      photoForVideo: string;
+      videoForPhoto: string;
+      audioForPhoto: string;
+      switchToReels: string;
+      switchToAudio: string;
+      switchToPhoto: string;
+    };
   };
   hero: {
     badge: string;
@@ -183,13 +193,23 @@ export const translations: Record<Language, TranslationDictionary> = {
         audio: "Tempel tautan Reels untuk ekstrak Audio MP3 (192 kbps)...",
         photo: "Tempel tautan postingan foto Instagram HD di sini...",
       },
+      mismatch: {
+        title: "Pilihan Fitur Tidak Sesuai",
+        photoForReels: "Tautan yang Anda masukkan adalah Video Reels, bukan Foto HD. Silakan beralih ke fitur 'Video Reels' atau 'Audio MP3' untuk mengunduhnya.",
+        photoForVideo: "Postingan Instagram ini terdeteksi sebagai Video, bukan Foto HD. Silakan beralih ke fitur 'Video Reels' atau 'Audio MP3'.",
+        videoForPhoto: "Tautan ini terdeteksi sebagai Foto HD / Gambar, bukan Video Reels. Silakan beralih ke fitur 'Foto HD' untuk mengunduh foto ini.",
+        audioForPhoto: "Tautan ini adalah Foto/Gambar tanpa trek suara. Fitur 'Audio MP3' hanya dapat mengekstrak suara dari konten video atau Reels.",
+        switchToReels: "Beralih ke Video Reels & Unduh",
+        switchToAudio: "Beralih ke Audio MP3 & Ekstrak",
+        switchToPhoto: "Beralih ke Foto HD & Unduh",
+      },
     },
     hero: {
       badge: "Download Video Reels & Foto Postingan IG Tanpa Watermark",
       titleLine1: "Download Reels & Foto Instagram",
       titleLine2: "HD & Tanpa Watermark",
       subtitle:
-        "Simpan video Reels, foto postingan HD, dan audio musik MP3 Instagram favorit Anda tanpa watermark secara instan dengan ReelSnap. Cepat, gratis, kualitas HD asli, dan langsung tersimpan di galeri ponsel atau laptop Anda.",
+        "Simpan video Reels, foto postingan HD, dan audio musik MP3 Instagram favorit Anda tanpa watermark secara instan dengan SatsetReels. Cepat, gratis, kualitas HD asli, dan langsung tersimpan di galeri ponsel atau laptop Anda.",
       placeholder:
         "Tempel tautan Instagram Reels atau Foto di sini... (contoh: https://www.instagram.com/reel/... atau /p/...)",
       pasteBtn: "Tempel",
@@ -242,20 +262,20 @@ export const translations: Record<Language, TranslationDictionary> = {
       uncroppedLabel: "Resolusi HD Penuh • Tidak Terpotong",
     },
     howTo: {
-      title: "Cara Download Reels & Foto Instagram dengan ReelSnap",
+      title: "Cara Download Reels & Foto Instagram dengan SatsetReels",
       subtitle: "Hanya butuh 3 langkah mudah untuk download Reels dan foto IG tanpa watermark",
       step1Title: "1. Salin Tautan Instagram",
       step1Desc:
         "Buka aplikasi Instagram, pilih video Reels atau foto postingan yang diinginkan, ketuk tombol Bagikan lalu pilih 'Salin Tautan'.",
-      step2Title: "2. Tempel Tautan di ReelSnap",
+      step2Title: "2. Tempel Tautan di SatsetReels",
       step2Desc:
-        "Buka situs ReelSnap di browser ponsel atau laptop Anda, tempel tautan pada kolom input. ReelSnap akan otomatis mendeteksi apakah link berupa Reels atau Foto.",
+        "Buka situs SatsetReels di browser ponsel atau laptop Anda, tempel tautan pada kolom input. SatsetReels akan otomatis mendeteksi apakah link berupa Reels atau Foto.",
       step3Title: "3. Simpan Media ke Perangkat",
       step3Desc:
         "Klik tombol 'Download Video HD' atau 'Download Foto HD'. Berkas beresolusi penuh langsung tersimpan di galeri ponsel atau komputer Anda tanpa watermark dan tanpa terpotong.",
     },
     features: {
-      title: "Keunggulan ReelSnap",
+      title: "Keunggulan SatsetReels",
       subtitle: "Layanan download Reels IG dan foto postingan HD terbaik, cepat, dan tanpa watermark",
       feat1Title: "Kualitas Full HD Asli",
       feat1Desc: "Video Reels dan foto postingan di-download dengan kualitas resolusi tinggi orisinal (1080p) tanpa pecah dan rasio penuh tidak terpotong.",
@@ -273,12 +293,12 @@ export const translations: Record<Language, TranslationDictionary> = {
     faq: {
       badge: "Tanya Jawab",
       title: "Pertanyaan yang Sering Diajukan",
-      subtitle: "Jawaban seputar layanan download Instagram Reels dan foto postingan HD dengan ReelSnap",
+      subtitle: "Jawaban seputar layanan download Instagram Reels dan foto postingan HD dengan SatsetReels",
     },
     about: {
       badge: "EKOSISTEM MEDIA INSTAGRAM",
       title: "Dirancang Khusus untuk Menyimpan Momen Visual & Audio Instagram",
-      p1: "ReelSnap dibangun khusus untuk menangani format media Instagram—mulai dari video vertikal Reels beresolusi tinggi, foto postingan Full HD jernih tanpa kompresi, hingga ekstraksi musik latar atau sound asli menjadi berkas MP3 berkualitas jernih.",
+      p1: "SatsetReels dibangun khusus untuk menangani format media Instagram—mulai dari video vertikal Reels beresolusi tinggi, foto postingan Full HD jernih tanpa kompresi, hingga ekstraksi musik latar atau sound asli menjadi berkas MP3 berkualitas jernih.",
       p2: "Sistem kami berjalan langsung melalui jalur streaming terenkripsi ke jaringan CDN resmi Instagram tanpa menyimpan riwayat tautan pengguna di database, dilengkapi proteksi keamanan server otomatis dan sepenuhnya bebas dari iklan pop-up yang mengganggu.",
       pills: {
         pill1: "✓ Tanpa Login Akun",
@@ -308,25 +328,25 @@ export const translations: Record<Language, TranslationDictionary> = {
       col3Title: "PANDUAN & FITUR",
       navHome: "Beranda Utama",
       navHowTo: "Cara Mengunduh (3 Langkah)",
-      navFeatures: "Keunggulan ReelSnap",
+      navFeatures: "Keunggulan SatsetReels",
       navFaq: "Pertanyaan Umum (FAQ)",
-      navAbout: "Mengenal ReelSnap",
+      navAbout: "Mengenal SatsetReels",
       col4Title: "LEGALITAS & BANTUAN",
       legalPrivacy: "Kebijakan Privasi",
       legalTerms: "Ketentuan Layanan",
       legalDmca: "Penafian Hak Cipta (DMCA)",
       legalHelp: "Pusat Bantuan & Kontak",
       disclaimer:
-        "ReelSnap adalah alat utilitas independen dan tidak berafiliasi dengan Instagram atau Meta Platforms, Inc. Seluruh hak kekayaan intelektual atas konten media yang diunduh sepenuhnya menjadi milik masing-masing kreator.",
+        "SatsetReels adalah alat utilitas independen dan tidak berafiliasi dengan Instagram atau Meta Platforms, Inc. Seluruh hak kekayaan intelektual atas konten media yang diunduh sepenuhnya menjadi milik masing-masing kreator.",
       copyright: "Seluruh Hak Cipta Dilindungi.",
       tagBottomRight: "Dibuat untuk Kreator & Pengarsip Konten",
     },
     pwaModal: {
-      title: "Pasang ReelSnap di Layar Utama",
-      iosInstructions: "Untuk memasang ReelSnap di iPhone / iPad Anda:",
+      title: "Pasang SatsetReels di Layar Utama",
+      iosInstructions: "Untuk memasang SatsetReels di iPhone / iPad Anda:",
       step1: "1. Ketuk tombol Bagikan ⎋ di bagian bawah peramban Safari.",
       step2: "2. Gulir menu ke bawah lalu pilih 'Tambah ke Layar Utama' ⊕.",
-      step3: "3. Ketuk 'Tambah' di pojok kanan atas. ReelSnap siap dibuka langsung dari Layar Utama!",
+      step3: "3. Ketuk 'Tambah' di pojok kanan atas. SatsetReels siap dibuka langsung dari Layar Utama!",
       close: "Tutup",
     },
   },
@@ -352,13 +372,23 @@ export const translations: Record<Language, TranslationDictionary> = {
         audio: "Paste Reels link to extract MP3 Audio (192 kbps)...",
         photo: "Paste Instagram HD photo link here...",
       },
+      mismatch: {
+        title: "Feature Mismatch Detected",
+        photoForReels: "The link you entered is an Instagram Reel, not an HD Photo. Please switch to 'Reels Video' or 'MP3 Audio' to download this media.",
+        photoForVideo: "This Instagram post was detected as a Video, not an HD Photo. Please switch to 'Reels Video' or 'MP3 Audio'.",
+        videoForPhoto: "This link was detected as an HD Photo, not a Reels Video. Please switch to 'HD Photo' to view and download this photo.",
+        audioForPhoto: "This post is a static Photo without an audio track. 'MP3 Audio' can only extract sound from Reels/Videos.",
+        switchToReels: "Switch to Reels Video & Download",
+        switchToAudio: "Switch to MP3 Audio & Extract",
+        switchToPhoto: "Switch to HD Photo & Download",
+      },
     },
     hero: {
       badge: "Download Instagram Reels & Photo Posts Without Watermark",
       titleLine1: "Download Instagram Reels & Photos",
       titleLine2: "HD & No Watermark",
       subtitle:
-        "Save your favorite Instagram Reels, HD photo posts, and MP3 audio instantly without watermarks using ReelSnap. Fast, free, original HD quality, saved directly to your device.",
+        "Save your favorite Instagram Reels, HD photo posts, and MP3 audio instantly without watermarks using SatsetReels. Fast, free, original HD quality, saved directly to your device.",
       placeholder:
         "Paste Instagram Reels or Photo link here... (e.g. https://www.instagram.com/reel/... or /p/...)",
       pasteBtn: "Paste",
@@ -411,17 +441,17 @@ export const translations: Record<Language, TranslationDictionary> = {
       uncroppedLabel: "Full HD Resolution • Never Cropped",
     },
     howTo: {
-      title: "How to Download Reels & Photos with ReelSnap",
+      title: "How to Download Reels & Photos with SatsetReels",
       subtitle: "Only 3 simple steps to download Instagram Reels and photos without watermark",
       step1Title: "1. Copy Instagram Link",
       step1Desc: "Open the Instagram app, choose the Reel or photo post you want, tap Share, and select 'Copy Link'.",
-      step2Title: "2. Paste Link into ReelSnap",
-      step2Desc: "Visit ReelSnap on your mobile or desktop browser, paste the link into the input field. ReelSnap automatically detects whether it is a Reel or Photo.",
+      step2Title: "2. Paste Link into SatsetReels",
+      step2Desc: "Visit SatsetReels on your mobile or desktop browser, paste the link into the input field. SatsetReels automatically detects whether it is a Reel or Photo.",
       step3Title: "3. Save Media to Device",
       step3Desc: "Click 'Download HD Video', 'Download Audio MP3', or 'Download HD Photo'. The file will save directly to your gallery without cropping.",
     },
     features: {
-      title: "ReelSnap Key Features",
+      title: "SatsetReels Key Features",
       subtitle: "The best, fastest Instagram Reels and HD photo downloader without watermark",
       feat1Title: "Original Full HD Quality",
       feat1Desc: "Reels videos and photo posts are downloaded at original high-resolution (1080p) with uncropped full aspect ratio.",
@@ -439,12 +469,12 @@ export const translations: Record<Language, TranslationDictionary> = {
     faq: {
       badge: "FAQ",
       title: "Frequently Asked Questions",
-      subtitle: "Answers about downloading Instagram Reels and HD photo posts with ReelSnap",
+      subtitle: "Answers about downloading Instagram Reels and HD photo posts with SatsetReels",
     },
     about: {
       badge: "INSTAGRAM MEDIA ECOSYSTEM",
       title: "Specifically Crafted to Preserve Instagram Visual & Audio Moments",
-      p1: "ReelSnap is purpose-built to handle Instagram's media formats—ranging from high-resolution vertical Reels videos, crystal-clear Full HD photo posts without compression, to extracting original background audio and music into crisp MP3 files.",
+      p1: "SatsetReels is purpose-built to handle Instagram's media formats—ranging from high-resolution vertical Reels videos, crystal-clear Full HD photo posts without compression, to extracting original background audio and music into crisp MP3 files.",
       p2: "Our system operates directly via encrypted streaming conduits to official Instagram CDN networks without recording user link history in databases, fortified with automated server safeguards and 100% free of invasive pop-up ads.",
       pills: {
         pill1: "✓ No Account Login",
@@ -474,25 +504,25 @@ export const translations: Record<Language, TranslationDictionary> = {
       col3Title: "GUIDE & FEATURES",
       navHome: "Main Home",
       navHowTo: "How to Download (3 Steps)",
-      navFeatures: "ReelSnap Advantages",
+      navFeatures: "SatsetReels Advantages",
       navFaq: "Frequently Asked Questions (FAQ)",
-      navAbout: "About ReelSnap",
+      navAbout: "About SatsetReels",
       col4Title: "LEGAL & SUPPORT",
       legalPrivacy: "Privacy Policy",
       legalTerms: "Terms of Service",
       legalDmca: "Copyright & DMCA Disclaimer",
       legalHelp: "Help & Contact Center",
       disclaimer:
-        "ReelSnap is an independent utility tool not affiliated with Instagram or Meta Platforms, Inc. All intellectual property rights of downloaded media content remain with their respective creators.",
+        "SatsetReels is an independent utility tool not affiliated with Instagram or Meta Platforms, Inc. All intellectual property rights of downloaded media content remain with their respective creators.",
       copyright: "All Rights Reserved.",
       tagBottomRight: "Crafted for Creators & Content Archivists",
     },
     pwaModal: {
-      title: "Install ReelSnap to Home Screen",
-      iosInstructions: "To install ReelSnap on your iPhone / iPad:",
+      title: "Install SatsetReels to Home Screen",
+      iosInstructions: "To install SatsetReels on your iPhone / iPad:",
       step1: "1. Tap the Share button ⎋ at the bottom of Safari.",
       step2: "2. Scroll down and tap 'Add to Home Screen' ⊕.",
-      step3: "3. Tap 'Add' in the top right corner. ReelSnap is now accessible directly from your Home Screen!",
+      step3: "3. Tap 'Add' in the top right corner. SatsetReels is now accessible directly from your Home Screen!",
       close: "Close",
     },
   },

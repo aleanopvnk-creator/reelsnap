@@ -1,4 +1,4 @@
-# 🚀 ReelSnap - Production-Ready Instagram Video Downloader
+# 🚀 SatsetReels - Production-Ready Instagram Video Downloader
 
 Aplikasi web Fullstack modern berstandar production untuk mengunduh video **Instagram Reels & Post** menggunakan **Next.js (App Router)**, **TypeScript**, dan **Tailwind CSS**.
 

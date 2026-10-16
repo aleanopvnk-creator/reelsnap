@@ -110,13 +110,13 @@ export async function GET(req: NextRequest) {
 
     // SSRF verification: only allow verified Meta/Instagram CDN hosts
     if (!["http:", "https:"].includes(parsedUrl.protocol) || !isAllowedMediaHost(parsedUrl.hostname)) {
-      return new Response("Akses domain media ditolak oleh protokol keamanan SSRF ReelSnap.", { status: 403 });
+      return new Response("Akses domain media ditolak oleh protokol keamanan SSRF SatsetReels.", { status: 403 });
     }
 
     // Clean and sanitize filename
     let safeFilename = requestedFilename
       ? requestedFilename.replace(/[^a-zA-Z0-9_\-.]/g, "_")
-      : `ReelSnap_${Date.now()}`;
+      : `SatsetReels_${Date.now()}`;
 
     const isImage = mediaType === "image" || safeFilename.endsWith(".jpg") || safeFilename.endsWith(".jpeg");
     const isAudio = mediaType === "audio" || safeFilename.endsWith(".mp3");

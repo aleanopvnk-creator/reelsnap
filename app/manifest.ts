@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ReelSnap - Download Video Instagram Tanpa Watermark",
-    short_name: "ReelSnap",
+    name: "SatsetReels - Download Video Instagram Tanpa Watermark",
+    short_name: "SatsetReels",
     description:
       "Unduh Video Instagram Reels, Video Feed & Audio MP3 Gratis Cepat Tanpa Watermark.",
     start_url: "/",

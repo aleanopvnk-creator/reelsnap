@@ -73,7 +73,7 @@ export default function InfoModal({
           <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
             <img
               src="/icon.png"
-              alt="ReelSnap Logo"
+              alt="SatsetReels Logo"
               className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0"
             />
             <span id="info-modal-title" className="font-bold text-slate-900 dark:text-white text-sm sm:text-base md:text-lg truncate">
@@ -93,14 +93,14 @@ export default function InfoModal({
         </div>
 
         {/* Tab Navigation - 4 Segmented Capsules */}
-        <div className="p-2 sm:p-3 bg-slate-100 dark:bg-zinc-950/70 border-b border-slate-200 dark:border-zinc-800/80">
-          <div className="grid grid-cols-4 gap-1 sm:gap-1.5 bg-slate-200/80 dark:bg-zinc-900/90 p-1 rounded-xl sm:rounded-2xl border border-slate-300 dark:border-zinc-800">
+        <div className="p-2 sm:p-2.5 bg-slate-50 dark:bg-zinc-950/70 border-b border-slate-200 dark:border-zinc-800/80">
+          <div className="grid grid-cols-4 gap-1 bg-slate-200/60 dark:bg-zinc-900 p-1 rounded-xl border border-slate-200 dark:border-zinc-800">
             <button
               onClick={() => setActiveTab("privacy")}
-              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-2 rounded-lg sm:rounded-xl text-[10.5px] sm:text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg text-[10.5px] sm:text-xs font-medium transition-all cursor-pointer ${
                 activeTab === "privacy"
-                  ? "bg-pink-600 text-white shadow-sm dark:bg-pink-500/20 dark:text-pink-300 dark:border dark:border-pink-500/40"
-                  : "text-slate-800 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
+                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm font-semibold"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
               }`}
             >
               <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
@@ -108,10 +108,10 @@ export default function InfoModal({
             </button>
             <button
               onClick={() => setActiveTab("terms")}
-              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-2 rounded-lg sm:rounded-xl text-[10.5px] sm:text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg text-[10.5px] sm:text-xs font-medium transition-all cursor-pointer ${
                 activeTab === "terms"
-                  ? "bg-purple-600 text-white shadow-sm dark:bg-purple-500/20 dark:text-purple-300 dark:border dark:border-purple-500/40"
-                  : "text-slate-800 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
+                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm font-semibold"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
               }`}
             >
               <FileText className="w-3.5 h-3.5 shrink-0" />
@@ -119,10 +119,10 @@ export default function InfoModal({
             </button>
             <button
               onClick={() => setActiveTab("dmca")}
-              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-2 rounded-lg sm:rounded-xl text-[10.5px] sm:text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg text-[10.5px] sm:text-xs font-medium transition-all cursor-pointer ${
                 activeTab === "dmca"
-                  ? "bg-rose-600 text-white shadow-sm dark:bg-rose-500/20 dark:text-rose-300 dark:border dark:border-rose-500/40"
-                  : "text-slate-800 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
+                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm font-semibold"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
               }`}
             >
               <Scale className="w-3.5 h-3.5 shrink-0" />
@@ -130,10 +130,10 @@ export default function InfoModal({
             </button>
             <button
               onClick={() => setActiveTab("help")}
-              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-2 rounded-lg sm:rounded-xl text-[10.5px] sm:text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg text-[10.5px] sm:text-xs font-medium transition-all cursor-pointer ${
                 activeTab === "help"
-                  ? "bg-amber-600 text-white shadow-sm dark:bg-amber-500/20 dark:text-amber-300 dark:border dark:border-amber-500/40"
-                  : "text-slate-800 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
+                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm font-semibold"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
               }`}
             >
               <HelpCircle className="w-3.5 h-3.5 shrink-0" />
@@ -151,8 +151,8 @@ export default function InfoModal({
                 <ShieldCheck className="w-5 h-5 text-pink-600 dark:text-pink-400 shrink-0 mt-0.5" />
                 <p className="text-xs sm:text-sm leading-relaxed font-bold">
                   {isId
-                    ? "ReelSnap menghormati privasi Anda. Layanan ini dapat digunakan secara 100% anonim tanpa registrasi, tanpa login, dan tanpa menyimpan berkas hasil unduhan."
-                    : "ReelSnap values your privacy. Our service is 100% anonymous with no registration, no Instagram login required, and no downloaded media stored on our servers."}
+                    ? "SatsetReels menghormati privasi Anda. Layanan ini dapat digunakan secara 100% anonim tanpa registrasi, tanpa login, dan tanpa menyimpan berkas hasil unduhan."
+                    : "SatsetReels values your privacy. Our service is 100% anonymous with no registration, no Instagram login required, and no downloaded media stored on our servers."}
                 </p>
               </div>
 
@@ -162,8 +162,8 @@ export default function InfoModal({
                 </h4>
                 <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
                   {isId
-                    ? "ReelSnap tidak pernah meminta atau menyimpan kredensial akun Instagram Anda (seperti username atau kata sandi), alamat IP permanen, nama lengkap, atau alamat email pengguna umum."
-                    : "ReelSnap never requests or retains your personal Instagram credentials (username or password), permanent IP logs, full names, or email addresses for standard downloads."}
+                    ? "SatsetReels tidak pernah meminta atau menyimpan kredensial akun Instagram Anda (seperti username atau kata sandi), alamat IP permanen, nama lengkap, atau alamat email pengguna umum."
+                    : "SatsetReels never requests or retains your personal Instagram credentials (username or password), permanent IP logs, full names, or email addresses for standard downloads."}
                 </p>
               </div>
 
@@ -173,8 +173,8 @@ export default function InfoModal({
                 </h4>
                 <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
                   {isId
-                    ? "Tautan URL Instagram yang Anda masukkan diproses secara langsung untuk menyalurkan berkas video, foto, atau audio dari CDN resmi Instagram ke peramban Anda. Server ReelSnap tidak menyimpan arsip atau salinan permanen dari konten tersebut."
-                    : "Instagram links you provide are parsed in real time to stream video, photo, or audio content directly from Instagram's official CDN to your browser. ReelSnap servers do not host or archive any user media files."}
+                    ? "Tautan URL Instagram yang Anda masukkan diproses secara langsung untuk menyalurkan berkas video, foto, atau audio dari CDN resmi Instagram ke peramban Anda. Server SatsetReels tidak menyimpan arsip atau salinan permanen dari konten tersebut."
+                    : "Instagram links you provide are parsed in real time to stream video, photo, or audio content directly from Instagram's official CDN to your browser. SatsetReels servers do not host or archive any user media files."}
                 </p>
               </div>
 
@@ -214,8 +214,8 @@ export default function InfoModal({
                 <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
                 <p className="text-xs sm:text-sm leading-relaxed font-bold">
                   {isId
-                    ? "Dengan mengakses dan menggunakan ReelSnap, Anda menyetujui Ketentuan Layanan ini untuk penggunaan pribadi yang sah serta menghormati hak cipta kreator asli."
-                    : "By accessing and using ReelSnap, you agree to these Terms of Service for lawful personal use and agree to respect all intellectual property rights of original creators."}
+                    ? "Dengan mengakses dan menggunakan SatsetReels, Anda menyetujui Ketentuan Layanan ini untuk penggunaan pribadi yang sah serta menghormati hak cipta kreator asli."
+                    : "By accessing and using SatsetReels, you agree to these Terms of Service for lawful personal use and agree to respect all intellectual property rights of original creators."}
                 </p>
               </div>
 
@@ -225,8 +225,8 @@ export default function InfoModal({
                 </h4>
                 <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
                   {isId
-                    ? "ReelSnap disediakan murni sebagai alat bantu teknis untuk mengunduh konten dari akun Instagram publik untuk keperluan pencadangan pribadi (personal backup), edukasi, atau referensi non-komersial (fair use)."
-                    : "ReelSnap is provided solely as a technical utility to download public Instagram media for personal backup, offline viewing, education, or non-commercial fair use."}
+                    ? "SatsetReels disediakan murni sebagai alat bantu teknis untuk mengunduh konten dari akun Instagram publik untuk keperluan pencadangan pribadi (personal backup), edukasi, atau referensi non-komersial (fair use)."
+                    : "SatsetReels is provided solely as a technical utility to download public Instagram media for personal backup, offline viewing, education, or non-commercial fair use."}
                 </p>
               </div>
 
@@ -237,7 +237,7 @@ export default function InfoModal({
                 <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
                   {isId
                     ? "Seluruh hak cipta video, audio, foto, dan grafis dimiliki sepenuhnya oleh kreator konten asli. Anda dilarang mendistribusikan ulang, memonetisasi, atau menjual konten unduhan milik pihak ketiga tanpa izin tertulis dari pemilik hak cipta."
-                    : "All video, audio, image, and graphic copyrights belong exclusively to their respective creators. You may not redistribute, commercialize, or monetize third-party media downloaded via ReelSnap without explicit permission from the copyright owner."}
+                    : "All video, audio, image, and graphic copyrights belong exclusively to their respective creators. You may not redistribute, commercialize, or monetize third-party media downloaded via SatsetReels without explicit permission from the copyright owner."}
                 </p>
               </div>
 
@@ -247,8 +247,8 @@ export default function InfoModal({
                 </h4>
                 <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
                   {isId
-                    ? "Layanan disediakan 'sebagaimana adanya' (as-is) tanpa garansi ketersediaan tanpa gangguan. ReelSnap tidak bertanggung jawab atas kerugian atau pelanggaran hukum yang diakibatkan oleh penyalahgunaan layanan oleh pengguna."
-                    : "The service is provided 'as is' without warranties of any kind. ReelSnap shall not be liable for any damages or legal violations resulting from unauthorized use by users."}
+                    ? "Layanan disediakan 'sebagaimana adanya' (as-is) tanpa garansi ketersediaan tanpa gangguan. SatsetReels tidak bertanggung jawab atas kerugian atau pelanggaran hukum yang diakibatkan oleh penyalahgunaan layanan oleh pengguna."
+                    : "The service is provided 'as is' without warranties of any kind. SatsetReels shall not be liable for any damages or legal violations resulting from unauthorized use by users."}
                 </p>
               </div>
             </div>
@@ -261,8 +261,8 @@ export default function InfoModal({
                 <Scale className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
                 <p className="text-xs sm:text-sm leading-relaxed font-bold">
                   {isId
-                    ? "ReelSnap sangat menghargai hak kekayaan intelektual orang lain dan mematuhi Digital Millennium Copyright Act (DMCA) serta peraturan hak cipta yang berlaku."
-                    : "ReelSnap strongly respects intellectual property rights and complies with the Digital Millennium Copyright Act (DMCA) and international copyright laws."}
+                    ? "SatsetReels sangat menghargai hak kekayaan intelektual orang lain dan mematuhi Digital Millennium Copyright Act (DMCA) serta peraturan hak cipta yang berlaku."
+                    : "SatsetReels strongly respects intellectual property rights and complies with the Digital Millennium Copyright Act (DMCA) and international copyright laws."}
                 </p>
               </div>
 
@@ -272,8 +272,8 @@ export default function InfoModal({
                 </h4>
                 <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
                   {isId
-                    ? "ReelSnap adalah situs web independen dan TIDAK berafiliasi, didukung, disponsori, atau secara resmi terhubung dengan Instagram, Meta Platforms, Inc., atau entitas terkait lainnya. Nama 'Instagram' beserta logo kameranya adalah merek dagang terdaftar milik Meta Platforms, Inc."
-                    : "ReelSnap is an independent tool and is NOT affiliated, associated, authorized, endorsed by, or in any way officially connected with Instagram, Meta Platforms, Inc., or any of its subsidiaries. The name 'Instagram' and related marks are registered trademarks of Meta Platforms, Inc."}
+                    ? "SatsetReels adalah situs web independen dan TIDAK berafiliasi, didukung, disponsori, atau secara resmi terhubung dengan Instagram, Meta Platforms, Inc., atau entitas terkait lainnya. Nama 'Instagram' beserta logo kameranya adalah merek dagang terdaftar milik Meta Platforms, Inc."
+                    : "SatsetReels is an independent tool and is NOT affiliated, associated, authorized, endorsed by, or in any way officially connected with Instagram, Meta Platforms, Inc., or any of its subsidiaries. The name 'Instagram' and related marks are registered trademarks of Meta Platforms, Inc."}
                 </p>
               </div>
 
@@ -283,8 +283,8 @@ export default function InfoModal({
                 </h4>
                 <p className="text-slate-700 dark:text-zinc-300 font-semibold leading-relaxed">
                   {isId
-                    ? "Jika Anda adalah pemilik hak cipta yang sah dan meyakini bahwa konten Anda disalahgunakan atau ingin memblokir tautan konten Anda agar tidak dapat diproses oleh sistem ReelSnap, silakan kirimkan pemberitahuan resmi yang memuat:"
-                    : "If you are a copyright owner and believe your copyrighted work is being infringed or wish to restrict your Instagram URLs from being processed through ReelSnap, please submit an official notice containing:"}
+                    ? "Jika Anda adalah pemilik hak cipta yang sah dan meyakini bahwa konten Anda disalahgunakan atau ingin memblokir tautan konten Anda agar tidak dapat diproses oleh sistem SatsetReels, silakan kirimkan pemberitahuan resmi yang memuat:"
+                    : "If you are a copyright owner and believe your copyrighted work is being infringed or wish to restrict your Instagram URLs from being processed through SatsetReels, please submit an official notice containing:"}
                 </p>
                 <ul className="list-disc list-inside space-y-1 text-slate-700 dark:text-zinc-300 font-semibold text-xs mt-2 pl-1">
                   <li>
@@ -315,7 +315,7 @@ export default function InfoModal({
                   <Mail className="w-4 h-4 text-pink-600 dark:text-pink-400 shrink-0" />
                   <div>
                     <p className="text-xs font-bold text-slate-950 dark:text-white">Email DMCA / Hak Cipta:</p>
-                    <p className="text-xs text-pink-600 dark:text-pink-400 font-mono font-bold">dmca@reelsnap.app</p>
+                    <p className="text-xs text-pink-600 dark:text-pink-400 font-mono font-bold">dmca@satsetreels.app</p>
                   </div>
                 </div>
                 <span className="text-[10px] text-slate-700 dark:text-zinc-400 uppercase font-black">Respon 24-48 Jam</span>
@@ -330,8 +330,8 @@ export default function InfoModal({
                 <HelpCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 <p className="text-xs sm:text-sm leading-relaxed font-bold">
                   {isId
-                    ? "Butuh bantuan saat mengunduh? Temukan solusi atas masalah teknis umum atau hubungi tim pengembang ReelSnap."
-                    : "Need help downloading? Find quick fixes for common technical issues or contact the ReelSnap support team."}
+                    ? "Butuh bantuan saat mengunduh? Temukan solusi atas masalah teknis umum atau hubungi tim pengembang SatsetReels."
+                    : "Need help downloading? Find quick fixes for common technical issues or contact the SatsetReels support team."}
                 </p>
               </div>
 
@@ -348,8 +348,8 @@ export default function InfoModal({
                     </p>
                     <p className="text-slate-700 dark:text-zinc-300 font-semibold text-xs leading-relaxed">
                       {isId
-                        ? "ReelSnap hanya dapat mengunduh video dan foto dari akun publik. Video dari akun yang dikunci (privat) tidak dapat diakses."
-                        : "ReelSnap only extracts media from public Instagram accounts. Private posts cannot be processed to protect account owner privacy."}
+                        ? "SatsetReels hanya dapat mengunduh video dan foto dari akun publik. Video dari akun yang dikunci (privat) tidak dapat diakses."
+                        : "SatsetReels only extracts media from public Instagram accounts. Private posts cannot be processed to protect account owner privacy."}
                     </p>
                   </div>
 
@@ -382,11 +382,11 @@ export default function InfoModal({
                   <Mail className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <div>
                     <p className="text-xs font-bold text-slate-950 dark:text-white">{isId ? "Kontak Dukungan Pengguna:" : "Support & Inquiries:"}</p>
-                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold">support@reelsnap.app</p>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold">support@satsetreels.app</p>
                   </div>
                 </div>
                 <a
-                  href="mailto:support@reelsnap.app"
+                  href="mailto:support@satsetreels.app"
                   className="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-900 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white text-xs font-bold flex items-center gap-1 transition-colors"
                 >
                   <span>{isId ? "Kirim Email" : "Email Us"}</span>
@@ -414,7 +414,7 @@ export default function InfoModal({
 
         {/* Footer */}
         <div className="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-zinc-950/70 flex items-center justify-between text-xs text-slate-600 dark:text-zinc-500">
-          <span className="text-[11px] sm:text-xs">&copy; 2026 ReelSnap. {isId ? "Hak Cipta Dilindungi." : "All Rights Reserved."}</span>
+          <span className="text-[11px] sm:text-xs">&copy; 2026 SatsetReels. {isId ? "Hak Cipta Dilindungi." : "All Rights Reserved."}</span>
           <button
             onClick={onClose}
             className="px-4 py-1.5 sm:py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-900 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white font-medium text-xs sm:text-sm transition-colors cursor-pointer"
